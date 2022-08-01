@@ -44,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
         await storage.write(key: "fullname", value: fullname);
         await storage.write(key: "mdcregno", value: mdcregno);
         // ignore: use_build_context_synchronously
+        //Navigator.of(context).pushNamedAndRemoveUntil(HomePage(), (route) => false);
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
@@ -60,132 +62,131 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Form(
-      key: _formKey,
-      child: Column(children: [
-        Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'SynapseRX',
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            )),
-        Container(
-            margin: const EdgeInsets.fromLTRB(25, 50, 25, 10),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: Alignment.center,
-            child: Column(
-              children: [
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(children: [
                 Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10),
                     child: const Text(
-                      'Sign in',
-                      style: TextStyle(fontSize: 20),
+                      'SynapseRX',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 30),
                     )),
                 Container(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: nameController,
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "Please enter your username";
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextFormField(
-                    obscureText: _showPassword,
-                    controller: passwordController,
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "Please enter your password";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: 'Password',
-                        hintText: 'Enter your password here',
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _showPassword = !_showPassword;
-                            });
-                          },
-                          child: Icon(
-                            _showPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.grey,
-                          ),
-                        )),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    //forgot password screen
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordPage()));
-                  },
-                  child: const Text(
-                    'Forgot Password?',
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                    height: 50,
+                    margin: const EdgeInsets.fromLTRB(25, 50, 25, 10),
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                        onPressed: login,
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.indigo,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 15)),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(10),
+                            child: const Text(
+                              'Sign in',
+                              style: TextStyle(fontSize: 20),
+                            )),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextFormField(
+                            controller: nameController,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Please enter your username";
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'User Name',
+                            ),
                           ),
-                        ))),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text('Does not have account?'),
-                    TextButton(
-                      child: const Text(
-                        'Create an account',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      onPressed: () {
-                        //signup screen
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterPage()));
-                      },
-                    )
-                  ],
-                )
-              ],
-            ))
-      ]),
-    ));
+                        ),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: TextFormField(
+                            obscureText: _showPassword,
+                            controller: passwordController,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Please enter your password";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                labelText: 'Password',
+                                hintText: 'Enter your password here',
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _showPassword = !_showPassword;
+                                    });
+                                  },
+                                  child: Icon(
+                                    _showPassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
+                                )),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextButton(
+                          onPressed: () {
+                            //forgot password screen
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotPasswordPage()));
+                          },
+                          child: const Text(
+                            'Forgot Password?',
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                            height: 50,
+                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: ElevatedButton(
+                                onPressed: login,
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.indigo,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 40, vertical: 15)),
+                                child: const Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ))),
+                        const SizedBox(height: 15),
+                        const Text('Do not have account?'),
+                        const SizedBox(height: 1),
+                        TextButton(
+                          child: const Text(
+                            'Create an account',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegisterPage()));
+                          },
+                        )
+                      ],
+                    ))
+              ]),
+            )));
   }
 }

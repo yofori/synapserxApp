@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
-import 'package:synapserx_prescriber/pages/widgets/my_prescriptions.dart';
-import 'package:synapserx_prescriber/pages/widgets/my_patients.dart';
 import 'package:synapserx_prescriber/pages/widgets/pharmacies.dart';
 import 'package:synapserx_prescriber/pages/widgets/formularies.dart';
 
@@ -17,12 +15,6 @@ class _HomePageState extends State<HomePage> {
 
   final List _screens = [
     {"screen": const HomeDashboardPage()},
-    {
-      "screen": const PatientsPage(
-        title: 'My Patients',
-      )
-    },
-    {"screen": const MyPrescriptionsPage(title: 'My Prescriptions')},
     {"screen": const FormularyPage(title: 'Formularies')},
     {"screen": const PharmaciesPage(title: 'Pharmacies')},
   ];
@@ -46,14 +38,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'My Patients',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            label: 'My Prescriptions',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book_rounded),

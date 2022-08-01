@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synapserx_prescriber/pages/home_page.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 
 void main() => runApp(const MyApp());
@@ -10,9 +11,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: LoginPage(),
-    );
+    return MaterialApp(title: _title, initialRoute: '/', routes: {
+      '/': (context) => const LoginPage(),
+      '/home': (context) => const HomePage(),
+    });
   }
 }

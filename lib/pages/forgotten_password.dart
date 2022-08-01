@@ -13,6 +13,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: (const Text('SynapseRx - Reset Password'))),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(

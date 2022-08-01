@@ -31,9 +31,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
+        body: SingleChildScrollView(
+      child: Column(children: [
         Container(
-            //height: 80,
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(8),
             width: double.infinity,
@@ -92,11 +92,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                   'What would you like to do?',
                   textAlign: TextAlign.left,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 400,
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 10, 20, 2.5),
+                  padding: const EdgeInsets.all(8),
+                  width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () {},
                     icon: const Icon(
@@ -106,11 +105,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     label: const Text('Create A New Prescription'),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 400,
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
+                  padding: const EdgeInsets.all(8),
+                  width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () {
                       Navigator.push(
@@ -126,11 +124,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     label: const Text('Get an Existing Prescription'),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 400,
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
+                  padding: const EdgeInsets.all(8),
+                  width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () {},
                     icon: const Icon(
@@ -146,6 +143,6 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
               ]),
         ),
       ]),
-    );
+    ));
   }
 }
