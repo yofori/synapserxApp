@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
+import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/models/user.dart';
 
 class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            baseUrl: 'https://api.synapserx.com/api',
+            baseUrl: 'http://127.0.0.1:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -48,6 +49,22 @@ class DioClient {
       }
     } catch (e) {
       print('login: $e');
+    }
+  }
+
+  Future<Prescription?> getPrescription(String prescriptionId) async {
+    try {
+      _dio.options.headers['Cache-Control'] = 'no-cache';
+      Response response = await _dio.get(
+        '/prescription/$prescriptionId',
+      );
+      return Prescription.fromJson(response.data);
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    } catch (e) {
+      print(e);
+      throw e.toString();
     }
   }
 }

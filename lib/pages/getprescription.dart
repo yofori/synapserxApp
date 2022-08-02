@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:flutter/services.dart';
+import 'package:synapserx_prescriber/pages/displayPrescription.dart';
 
 class GetPrescriptionPage extends StatefulWidget {
   const GetPrescriptionPage({Key? key}) : super(key: key);
@@ -10,6 +12,8 @@ class GetPrescriptionPage extends StatefulWidget {
 }
 
 class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
+  TextEditingController presciptionController = TextEditingController();
+  final DioClient _dioClient = DioClient();
   final _formKey = GlobalKey<FormState>();
   String _scanBarcode = 'Unknown';
   @override
@@ -23,7 +27,8 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
-      print(barcodeScanRes);
+      //print(barcodeScanRes);
+      () => getprescription();
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
@@ -110,6 +115,7 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                             height: 20,
                           ),
                           TextFormField(
+                              controller: presciptionController,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'A prescription code is required';
@@ -135,7 +141,8 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                                 key: null,
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    getPrescription();
+                                    _scanBarcode = presciptionController.text;
+                                    getprescription();
                                   }
                                 },
                                 icon: const Icon(Icons.search),
@@ -179,5 +186,13 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
         ));
   }
 
-  void getPrescription() {}
+  getprescription() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            DisplayPrescriptionPage(prescriptionid: _scanBarcode),
+      ),
+    );
+  }
 }
