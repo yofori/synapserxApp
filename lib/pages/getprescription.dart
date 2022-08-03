@@ -28,7 +28,8 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
       //print(barcodeScanRes);
-      () => getprescription();
+      _scanBarcode = barcodeScanRes;
+      getprescription();
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
