@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
-import 'package:synapserx_prescriber/pages/widgets/pharmacies.dart';
 import 'package:synapserx_prescriber/pages/widgets/formularies.dart';
+import 'package:synapserx_prescriber/pages/widgets/my_patients.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,8 +15,8 @@ class _HomePageState extends State<HomePage> {
 
   final List _screens = [
     {"screen": const HomeDashboardPage()},
+    {"screen": const PatientsPage(title: 'My Patients')},
     {"screen": const FormularyPage(title: 'Formularies')},
-    {"screen": const PharmaciesPage(title: 'Pharmacies')},
   ];
 
   void _onItemTapped(int index) {
@@ -40,12 +40,12 @@ class _HomePageState extends State<HomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book_rounded),
-            label: 'Formularies',
+            icon: Icon(Icons.people),
+            label: 'My Patients',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.medical_services),
-            label: 'Pharmacies',
+            label: 'Formularies',
           ),
         ],
         currentIndex: _selectedIndex,

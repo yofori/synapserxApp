@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/pages/displayPrescription.dart';
 
@@ -13,7 +12,6 @@ class GetPrescriptionPage extends StatefulWidget {
 
 class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
   TextEditingController presciptionController = TextEditingController();
-  final DioClient _dioClient = DioClient();
   final _formKey = GlobalKey<FormState>();
   String _scanBarcode = 'Unknown';
   @override
@@ -148,7 +146,7 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                                 },
                                 icon: const Icon(Icons.search),
                                 label: const Text(
-                                  "Search for Prescription",
+                                  "Find Prescription",
                                   style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.white,

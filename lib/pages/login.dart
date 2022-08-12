@@ -4,6 +4,7 @@ import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/pages/forgotten_password.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'home_page.dart';
+import 'package:synapserx_prescriber/common/service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       ));
 
       dynamic res = await _dioClient.loginUser(
-        nameController.text,
+        nameController.text.trim(),
         passwordController.text,
       );
 
@@ -37,14 +38,13 @@ class _LoginPageState extends State<LoginPage> {
 
       if (res['ErrorCode'] == null) {
         String accessToken = res['token'];
+        GlobalData.accessToken = accessToken;
         String fullname = res['firstname'] + ' ' + res['surname'];
         String mdcregno = res['mdcregno'];
         const storage = FlutterSecureStorage();
         await storage.write(key: "token", value: accessToken);
         await storage.write(key: "fullname", value: fullname);
         await storage.write(key: "mdcregno", value: mdcregno);
-        // ignore: use_build_context_synchronously
-        //Navigator.of(context).pushNamedAndRemoveUntil(HomePage(), (route) => false);
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));

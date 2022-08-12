@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
+import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/models/user.dart';
 
@@ -10,7 +9,8 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            baseUrl: 'https://api.synapserx.com/api',
+            //baseUrl: 'https://api.synapserx.com/api',
+            baseUrl: 'http://127.0.0.1:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -59,6 +59,25 @@ class DioClient {
         '/prescription/$prescriptionId',
       );
       return Prescription.fromJson(response.data);
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    } catch (e) {
+      print(e);
+      throw e.toString();
+    }
+  }
+
+  Future<List<Associations>> getAssociations(String token) async {
+    try {
+      _dio.options.headers['Authorization'] = token;
+      Response response = await _dio.get(
+        '/user/listassociations',
+      );
+      print(response.data);
+      return (response.data as List)
+          .map((x) => Associations.fromJson(x))
+          .toList();
     } on DioError catch (err) {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;

@@ -206,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             hintText: 'Enter your cellphone number'),
                         keyboardType: TextInputType.phone,
                         validator: (val) {
-                          if (!(val!.isEmpty) &&
+                          if ((val!.isNotEmpty) &&
                               !RegExp(r"^(\d+)*$").hasMatch(val)) {
                             return "Enter a valid phone number";
                           }

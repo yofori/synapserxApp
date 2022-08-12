@@ -22,8 +22,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   }
 
   // get stored full name of prescriber from secure storage
-  final storage = const FlutterSecureStorage();
   Future<String?> getData(String key) async {
+    const storage = const FlutterSecureStorage();
     final String? value = await storage.read(key: key);
     return value;
   }
