@@ -47,7 +47,7 @@ class _PatientsPageState extends State<PatientsPage> {
             suffixIcon: const Icon(Icons.search),
           )),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           SingleChildScrollView(
               child: FutureBuilder<List<Associations>>(
@@ -77,13 +77,30 @@ class _PatientsPageState extends State<PatientsPage> {
                                   child: ListTile(
                                 leading: CircleAvatar(
                                   radius: 30,
-                                  child: Text(getInitials(associations[index]
-                                      .patientFullname
-                                      .toString())),
+                                  backgroundColor: Colors.primaries[
+                                      index % Colors.primaries.length],
+                                  child: Text(getInitials(
+                                    associations[index]
+                                        .patientFullname
+                                        .toString(),
+                                  )),
                                 ),
-                                title: Text(
-                                  '${associations[index].patientFullname.toString()} ',
-                                  maxLines: 2,
+                                title: IntrinsicHeight(
+                                  child: Container(
+                                    height: 43,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                          bottom:
+                                              BorderSide(color: Colors.grey)),
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '${associations[index].patientFullname.toString()} ',
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ));
                             },
