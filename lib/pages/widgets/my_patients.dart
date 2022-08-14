@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
@@ -15,6 +16,16 @@ class PatientsPage extends StatefulWidget {
 class _PatientsPageState extends State<PatientsPage> {
   static String accessToken = GlobalData.accessToken;
   final DioClient _dioClient = DioClient();
+  TextEditingController _textController = TextEditingController();
+
+  late Future<List<Associations>> associations;
+  String searchString = "";
+
+  @override
+  void initState() {
+    super.initState();
+    associations = fetchAssociations();
+  }
 
   String getInitials(String patientFullname) => patientFullname.isNotEmpty
       ? patientFullname
@@ -26,96 +37,101 @@ class _PatientsPageState extends State<PatientsPage> {
       : '';
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add Patient',
+        child: const Icon(Icons.person_add),
+        onPressed: () {},
+      ),
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextField(
-              decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintText: 'Enter patient name',
-            suffixIcon: const Icon(Icons.search),
-          )),
-          const SizedBox(
-            height: 20,
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextField(
+                controller: _textController,
+                onChanged: (value) {
+                  setState(() {
+                    searchString = value.toLowerCase();
+                  });
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  hintText: 'Enter patient name',
+                  prefixIcon: const Icon(Icons.search),
+                )),
           ),
-          SingleChildScrollView(
-              child: FutureBuilder<List<Associations>>(
-                  future: _dioClient.getAssociations(accessToken),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          child: const Center(
-                            child: SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ));
-                    }
-                    if (snapshot.hasData) {
-                      List<Associations>? associations = snapshot.data;
-                      if (associations != null) {
-                        return Container(
-                          child: ListView?.separated(
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              // ignore: avoid_unnecessary_containers
-                              return Container(
-                                  child: ListTile(
+          Expanded(
+            child: FutureBuilder(
+              builder: (context, AsyncSnapshot<List<Associations>> snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return snapshot.data![index].patientFullname
+                                .toLowerCase()
+                                .contains(searchString)
+                            ? ListTile(
+                                onTap: () {},
                                 leading: CircleAvatar(
                                   radius: 30,
                                   backgroundColor: Colors.primaries[
                                       index % Colors.primaries.length],
-                                  child: Text(getInitials(
-                                    associations[index]
-                                        .patientFullname
-                                        .toString(),
-                                  )),
-                                ),
-                                title: IntrinsicHeight(
-                                  child: Container(
-                                    height: 43,
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                          bottom:
-                                              BorderSide(color: Colors.grey)),
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        '${associations[index].patientFullname.toString()} ',
-                                        maxLines: 2,
-                                      ),
+                                  child: Text(
+                                    getInitials(
+                                      snapshot.data![index].patientFullname
+                                          .toString(),
                                     ),
                                   ),
                                 ),
-                              ));
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(height: 4);
-                            },
-                          ),
-                        );
-                      }
-                    }
-                    return Container(child: const Text('No patients found'));
-                  }))
+                                title: Container(
+                                  height: 43,
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(color: Colors.grey)),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        '${snapshot.data?[index].patientFullname}'),
+                                  ),
+                                ),
+                              )
+                            : Container();
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const SizedBox(height: 4);
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Something went wrong :('));
+                }
+                return SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: const Center(
+                      child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ));
+              },
+              future: associations,
+            ),
+          ),
         ],
       ),
-    ));
+    );
+  }
+
+  Future<List<Associations>> fetchAssociations() async {
+    final response = await _dioClient.getAssociations(accessToken);
+    return response;
   }
 }

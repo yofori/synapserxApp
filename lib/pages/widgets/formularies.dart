@@ -10,11 +10,16 @@ class FormularyPage extends StatefulWidget {
 
 class _FormularyPageState extends State<FormularyPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Container());
+        body: Column());
   }
 }
