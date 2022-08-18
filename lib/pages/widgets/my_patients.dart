@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/pages/addassociations.dart';
 
 // ignore: must_be_immutable
 class PatientsPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class PatientsPage extends StatefulWidget {
 class _PatientsPageState extends State<PatientsPage> {
   static String accessToken = GlobalData.accessToken;
   final DioClient _dioClient = DioClient();
-  TextEditingController _textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
 
   late Future<List<Associations>> associations;
   String searchString = "";
@@ -42,7 +42,12 @@ class _PatientsPageState extends State<PatientsPage> {
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Patient',
         child: const Icon(Icons.person_add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddAssociationsPage()));
+        },
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,46 +73,49 @@ class _PatientsPageState extends State<PatientsPage> {
             child: FutureBuilder(
               builder: (context, AsyncSnapshot<List<Associations>> snapshot) {
                 if (snapshot.hasData) {
-                  return Center(
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return snapshot.data![index].patientFullname
-                                .toLowerCase()
-                                .contains(searchString)
-                            ? ListTile(
-                                onTap: () {},
-                                leading: CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.primaries[
-                                      index % Colors.primaries.length],
-                                  child: Text(
-                                    getInitials(
-                                      snapshot.data![index].patientFullname
-                                          .toString(),
+                  return ListView.separated(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return snapshot.data![index].patientFullname
+                              .toLowerCase()
+                              .contains(searchString)
+                          ? ListTile(
+                              onTap: () {},
+                              leading: CircleAvatar(
+                                radius: 25,
+                                backgroundColor: Colors
+                                    .primaries[index % Colors.primaries.length],
+                                child: Text(
+                                  getInitials(
+                                    snapshot.data![index].patientFullname
+                                        .toString(),
+                                  ),
+                                ),
+                              ),
+                              title: Container(
+                                //height: 43,
+                                decoration: const BoxDecoration(
+                                    //border: Border(
+                                    //bottom: BorderSide(color: Colors.grey)),
                                     ),
-                                  ),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                      '${snapshot.data?[index].patientFullname}'),
                                 ),
-                                title: Container(
-                                  height: 43,
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(color: Colors.grey)),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        '${snapshot.data?[index].patientFullname}'),
-                                  ),
-                                ),
-                              )
-                            : Container();
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(height: 4);
-                      },
-                    ),
+                              ),
+                              subtitle: Text(
+                                  'Status: ${snapshot.data?[index].status}'),
+                            )
+                          : Container();
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(
+                        height: 2,
+                        color: Colors.grey,
+                      );
+                    },
                   );
                 } else if (snapshot.hasError) {
                   return const Center(child: Text('Something went wrong :('));

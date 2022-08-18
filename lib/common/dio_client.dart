@@ -10,7 +10,7 @@ class DioClient {
       : _dio = Dio(
           BaseOptions(
             //baseUrl: 'https://api.synapserx.com/api',
-            baseUrl: 'http://127.0.0.1:3000/api',
+            baseUrl: 'http://10.0.2.2:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -54,7 +54,7 @@ class DioClient {
 
   Future<Prescription?> getPrescription(String prescriptionId) async {
     try {
-      _dio.options.headers['Cache-Control'] = 'no-cache';
+      //_dio.options.headers['Cache-Control'] = 'no-cache';
       Response response = await _dio.get(
         '/prescription/$prescriptionId',
       );
@@ -63,7 +63,6 @@ class DioClient {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;
     } catch (e) {
-      print(e);
       throw e.toString();
     }
   }
@@ -84,6 +83,24 @@ class DioClient {
     } catch (e) {
       print(e);
       throw e.toString();
+    }
+  }
+
+  Future<dynamic> addAssociation(
+      {required String token, required String patientid}) async {
+    _dio.options.headers['Authorization'] = token;
+    print(patientid);
+    try {
+      Response response = await _dio.post(
+        '/user/createassociation',
+        data: {'patientuid': patientid},
+      );
+      if (response.statusCode == 201) {
+        return response.data;
+      }
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      return {'ErrorCode': 401, 'Message': errorMessage};
     }
   }
 }

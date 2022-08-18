@@ -16,10 +16,6 @@ class _FormularyPageState extends State<FormularyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Column());
+    return Scaffold(body: Column());
   }
 }
