@@ -9,8 +9,9 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            //baseUrl: 'https://api.synapserx.com/api',
-            baseUrl: 'http://10.0.2.2:3000/api',
+            baseUrl: 'https://api.synapserx.com/api',
+            //baseUrl: 'https://192.168.98.116/api',
+            //baseUrl: 'http://10.0.2.2:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -48,13 +49,12 @@ class DioClient {
         return {'ErrorCode': 401, 'Message': errorMessage};
       }
     } catch (e) {
-      print('login: $e');
+      //print('login: $e');
     }
   }
 
   Future<Prescription?> getPrescription(String prescriptionId) async {
     try {
-      //_dio.options.headers['Cache-Control'] = 'no-cache';
       Response response = await _dio.get(
         '/prescription/$prescriptionId',
       );
@@ -73,7 +73,7 @@ class DioClient {
       Response response = await _dio.get(
         '/user/listassociations',
       );
-      print(response.data);
+      //print(response.data);
       return (response.data as List)
           .map((x) => Associations.fromJson(x))
           .toList();
@@ -89,7 +89,7 @@ class DioClient {
   Future<dynamic> addAssociation(
       {required String token, required String patientid}) async {
     _dio.options.headers['Authorization'] = token;
-    print(patientid);
+    //print(patientid);
     try {
       Response response = await _dio.post(
         '/user/createassociation',
@@ -101,6 +101,25 @@ class DioClient {
     } on DioError catch (err) {
       final errorMessage = DioException.fromDioError(err).toString();
       return {'ErrorCode': 401, 'Message': errorMessage};
+    }
+  }
+
+  Future<List<Prescription>> getPxRx(
+      {required String patientuid, required String token}) async {
+    try {
+      _dio.options.headers['Authorization'] = token;
+      Response response = await _dio
+          .get('/prescription/getpatientprescriptions?pxId=$patientuid');
+      print(response.data);
+      return (response.data as List)
+          .map((x) => Prescription.fromJson(x))
+          .toList();
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    } catch (e) {
+      //print(e);
+      throw e.toString();
     }
   }
 }

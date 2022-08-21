@@ -4,6 +4,8 @@ import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/pages/addassociations.dart';
 
+import '../patients/patientprescriptions.dart';
+
 // ignore: must_be_immutable
 class PatientsPage extends StatefulWidget {
   const PatientsPage({Key? key, required this.title}) : super(key: key);
@@ -81,7 +83,17 @@ class _PatientsPageState extends State<PatientsPage> {
                               .toLowerCase()
                               .contains(searchString)
                           ? ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PatientPrescriptionsPage(
+                                            patientuid: snapshot
+                                                .data![index].patientuid,
+                                          )),
+                                );
+                              },
                               leading: CircleAvatar(
                                 radius: 25,
                                 backgroundColor: Colors
