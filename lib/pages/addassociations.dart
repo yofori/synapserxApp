@@ -162,6 +162,7 @@ class _AddAssociationsPageState extends State<AddAssociationsPage> {
           )));
 
   Future<void> addAssociation() async {
+    patientidController.text = _scanBarcode;
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Text('Processing Data'),
@@ -187,5 +188,6 @@ class _AddAssociationsPageState extends State<AddAssociationsPage> {
         ));
       }
     }
+    setState(() {});
   }
 }

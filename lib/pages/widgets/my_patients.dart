@@ -45,10 +45,7 @@ class _PatientsPageState extends State<PatientsPage> {
         tooltip: 'Add Patient',
         child: const Icon(Icons.person_add),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const AddAssociationsPage()));
+          navigateToAddAssociation();
         },
       ),
       body: Column(
@@ -153,5 +150,16 @@ class _PatientsPageState extends State<PatientsPage> {
   Future<List<Associations>> fetchAssociations() async {
     final response = await _dioClient.getAssociations(accessToken);
     return response;
+  }
+
+  void navigateToAddAssociation() async {
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => const AddAssociationsPage()))
+        .whenComplete(() {
+      setState(() {
+        associations = fetchAssociations();
+      });
+    });
   }
 }

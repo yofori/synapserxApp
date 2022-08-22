@@ -83,8 +83,8 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                           child: Text((i + 1).toString()),
                                         ),
                                         title: Text(snapshot.data![index]
-                                            .medications![i].drugName
-                                            .toString()),
+                                            .medications![i].drugName!
+                                            .toUpperCase()),
                                         subtitle: Text(
                                             '${snapshot.data![index].medications![i].routeOfAdministration} '
                                             '${snapshot.data![index].medications![i].dose} '
