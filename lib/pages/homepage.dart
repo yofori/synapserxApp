@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
 import 'package:synapserx_prescriber/pages/widgets/formularies.dart';
-import 'package:synapserx_prescriber/pages/widgets/my_patients.dart';
+import 'package:synapserx_prescriber/pages/widgets/mypatients.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

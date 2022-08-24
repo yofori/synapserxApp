@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:synapserx_prescriber/pages/getprescription.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
 
 class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
 
   // get stored full name of prescriber from secure storage
   Future<String?> getData(String key) async {
-    const storage = const FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     final String? value = await storage.read(key: key);
     return value;
   }

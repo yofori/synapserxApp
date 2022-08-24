@@ -28,6 +28,11 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add Prescription',
+        onPressed: () {},
+        child: const Icon(Icons.edit_note),
+      ),
       appBar: AppBar(title: const Text('Prescriptions')),
       body: Column(children: <Widget>[
         Expanded(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:synapserx_prescriber/pages/home_page.dart';
+import 'package:synapserx_prescriber/pages/homepage.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 
 void main() => runApp(const MyApp());

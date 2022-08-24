@@ -3,7 +3,7 @@ import 'package:synapserx_prescriber/pages/register.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/pages/forgotten_password.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'home_page.dart';
+import 'homepage.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 
 class LoginPage extends StatefulWidget {

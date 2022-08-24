@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
-import 'package:synapserx_prescriber/pages/addassociations.dart';
+import 'package:synapserx_prescriber/pages/patients/addassociations.dart';
 
 import '../patients/patientprescriptions.dart';
 

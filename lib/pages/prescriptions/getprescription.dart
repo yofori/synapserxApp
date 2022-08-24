@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/services.dart';
-import 'package:synapserx_prescriber/pages/displayPrescription.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/displayPrescription.dart';
 
 class GetPrescriptionPage extends StatefulWidget {
   const GetPrescriptionPage({Key? key}) : super(key: key);
