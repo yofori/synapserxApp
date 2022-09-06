@@ -33,6 +33,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(children: [
+        const SizedBox(
+          height: 15,
+        ),
         Container(
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(8),

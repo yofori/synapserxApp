@@ -9,9 +9,9 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            baseUrl: 'https://api.synapserx.com/api',
+            //baseUrl: 'https://api.synapserx.com/api',
             //baseUrl: 'https://192.168.98.116/api',
-            //baseUrl: 'http://10.0.2.2:3000/api',
+            baseUrl: 'http://10.0.2.2:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -110,16 +110,15 @@ class DioClient {
       _dio.options.headers['Authorization'] = token;
       Response response = await _dio
           .get('/prescription/getpatientprescriptions?pxId=$patientuid');
-      print(response.data);
       return (response.data as List)
           .map((x) => Prescription.fromJson(x))
           .toList();
     } on DioError catch (err) {
       final errorMessage = DioException.fromDioError(err).toString();
+      if (err.response!.statusCode == 404) {
+        return [];
+      }
       throw errorMessage;
-    } catch (e) {
-      //print(e);
-      throw e.toString();
     }
   }
 }

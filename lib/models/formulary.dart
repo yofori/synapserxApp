@@ -12,7 +12,7 @@ class Medicines {
         uom = drug["uom"].toString(),
         brandName = drug["brandName"].toString();
 
-  Map<String, Object> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'code': code,
       'genericName': genericName,

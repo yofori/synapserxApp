@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -41,6 +43,14 @@ class SqliteService {
     final db = await initiateDb();
 
     final List<Map<String, Object?>> queryResult = await db.query('medicines');
+    return queryResult.map((e) => Medicines.fromMap(e)).toList();
+  }
+
+  static Future<List<Medicines>> searchMedicines(String searchString) async {
+    final db = await initiateDb();
+
+    final List<Map<String, Object?>> queryResult = await db.rawQuery(
+        "SELECT * From medicines WHERE genericName LIKE '${searchString}%' OR  brandName LIKE '${searchString}%'");
     return queryResult.map((e) => Medicines.fromMap(e)).toList();
   }
 }

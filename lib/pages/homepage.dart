@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
-import 'package:synapserx_prescriber/pages/widgets/formularies.dart';
 import 'package:synapserx_prescriber/pages/widgets/mypatients.dart';
+import 'package:synapserx_prescriber/pages/widgets/medicinespage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   final List _screens = [
     {"screen": const HomeDashboardPage()},
     {"screen": const PatientsPage(title: 'My Patients')},
-    {"screen": const FormularyPage(title: 'Formularies')},
+    {"screen": const MyPrescriptionsPage(title: 'Medicines')},
   ];
 
   void _onItemTapped(int index) {
@@ -28,9 +28,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: (const Text('SynapseRx')),
-      ),
+      ),*/
       body: IndexedStack(children: [_screens[_selectedIndex]['screen']]),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -45,8 +45,8 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.medical_services),
-            label: 'Formularies',
-          ),
+            label: 'Medicines',
+          )
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: const Color.fromARGB(255, 65, 116, 209),

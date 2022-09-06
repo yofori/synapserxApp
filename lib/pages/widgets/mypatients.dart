@@ -41,6 +41,25 @@ class _PatientsPageState extends State<PatientsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: TextField(
+            controller: _textController,
+            onChanged: (value) {
+              setState(() {
+                searchString = value.toLowerCase();
+              });
+            },
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              hintText: "Enter patient's name",
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+            )),
+      )),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Patient',
         child: const Icon(Icons.person_add),
@@ -51,23 +70,6 @@ class _PatientsPageState extends State<PatientsPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextField(
-                controller: _textController,
-                onChanged: (value) {
-                  setState(() {
-                    searchString = value.toLowerCase();
-                  });
-                },
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  hintText: 'Enter patient name',
-                  prefixIcon: const Icon(Icons.search),
-                )),
-          ),
           Expanded(
             child: FutureBuilder(
               builder: (context, AsyncSnapshot<List<Associations>> snapshot) {
@@ -88,6 +90,8 @@ class _PatientsPageState extends State<PatientsPage> {
                                           PatientPrescriptionsPage(
                                             patientuid: snapshot
                                                 .data![index].patientuid,
+                                            patientName: snapshot
+                                                .data![index].patientFullname,
                                           )),
                                 );
                               },
