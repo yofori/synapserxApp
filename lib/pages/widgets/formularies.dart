@@ -42,7 +42,7 @@ class _FormularyPageState extends State<FormularyPage> {
                 itemCount: _medicines.length,
                 itemBuilder: (BuildContext context, int index) => Card(
                   color: Colors.orange[200],
-                  margin: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   child: ListTile(
                     title: Text(_medicines[index].genericName),
                     //subtitle: Text(_medicines[index].brandName),
