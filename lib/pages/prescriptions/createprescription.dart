@@ -16,13 +16,20 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
         drugName: 'Methicillin',
         drugDose: '250mg',
         dosageRegimen: 'BD',
-        noOfDays: '7'),
+        dosageUnits: '',
+        duration: '',
+        durationUnits: '',
+        id: '1'),
     RxMedicines(
-        drugCode: 'R035677',
-        drugName: 'Flucloxacillin',
-        drugDose: '500mg',
-        dosageRegimen: 'QID',
-        noOfDays: '7')
+      drugCode: 'R035677',
+      drugName: 'Flucloxacillin',
+      drugDose: '500mg',
+      dosageRegimen: 'QID',
+      dosageUnits: '',
+      duration: '',
+      durationUnits: '',
+      id: '2',
+    )
   ];
   @override
   Widget build(BuildContext context) {
@@ -31,9 +38,14 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
         tooltip: 'Add Medication',
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const SelectMedicinesPage()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SelectMedicinesPage()))
+              .then((value) {
+            if (value != null) {
+              addMedicines(value);
+            }
+          });
         },
         child: const Icon(Icons.add_to_queue),
       ),
@@ -55,7 +67,14 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
                         IconButton(
                             onPressed: () {}, icon: const Icon(Icons.edit)),
                         IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.delete)),
+                            onPressed: () {
+                              prescribedMedicines.removeWhere((element) {
+                                return element.id ==
+                                    prescribedMedicines[index].id;
+                              });
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.delete)),
                       ],
                     ),
                   ));
@@ -65,14 +84,42 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
       ),
     );
   }
+
+  void addMedicines(Map value) {
+    prescribedMedicines.add(RxMedicines(
+      drugCode: value['DrugCode'],
+      drugName: value['DrugName'],
+      drugDose: value['DrugDose'],
+      dosageRegimen: value['DosageRegimen'],
+      dosageUnits: 'DoseUnits',
+      duration: value['Duration'],
+      durationUnits: 'DurationUnits',
+      directionOfUse: value['DirectionOfUse'],
+      id: (prescribedMedicines.length + 1).toString(),
+    ));
+    setState(() {});
+  }
 }
 
 class RxMedicines {
-  String drugCode, drugName, drugDose, dosageRegimen, noOfDays;
-  RxMedicines(
-      {required this.dosageRegimen,
-      required this.drugCode,
-      required this.drugName,
-      required this.drugDose,
-      required this.noOfDays});
+  String id,
+      drugCode,
+      drugName,
+      drugDose,
+      dosageRegimen,
+      duration,
+      durationUnits,
+      dosageUnits;
+  String? directionOfUse;
+  RxMedicines({
+    required this.id,
+    required this.dosageRegimen,
+    required this.drugCode,
+    required this.drugName,
+    required this.drugDose,
+    required this.duration,
+    required this.durationUnits,
+    this.directionOfUse,
+    required this.dosageUnits,
+  });
 }

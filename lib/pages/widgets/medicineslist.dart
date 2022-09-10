@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/sqlite_service.dart';
 
-typedef drugCodeCallback(String);
+typedef DrugCodeCallback(code);
 
 class MedicinesList extends StatefulWidget {
   const MedicinesList({Key? key, required this.onTap}) : super(key: key);
-  final drugCodeCallback onTap;
+  final DrugCodeCallback onTap;
 
   @override
   State<MedicinesList> createState() => _MedicineListState();
@@ -18,6 +18,7 @@ class _MedicineListState extends State<MedicinesList> {
   final TextEditingController _controller = TextEditingController();
 
   @override
+  // ignore: must_call_super
   void initState() {
     SqliteService.getMedicines().then((data) {
       setState(() {
@@ -25,7 +26,7 @@ class _MedicineListState extends State<MedicinesList> {
         filteredMedicines = allMedicines = data;
         _isLoading = false;
       });
-      super.initState();
+      //super.initState();
     });
   }
 

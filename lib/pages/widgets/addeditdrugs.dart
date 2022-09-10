@@ -39,8 +39,15 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
     'QOD',
   ];
 
-  String? selectedValue = '';
-  String dropdownvalue = '';
+  final TextEditingController _doseController = TextEditingController();
+  final TextEditingController _doseDuration = TextEditingController();
+  final TextEditingController _directionOfUseController =
+      TextEditingController();
+
+  String? _selectDoseUnits = '';
+  String _selectDoseFrequency = '';
+  String? _selectedDurationUnit = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +67,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: _doseController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -125,7 +133,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                             //Do something when changing the item if you want.
                           },
                           onSaved: (value) {
-                            selectedValue = value.toString();
+                            _selectDoseUnits = value.toString();
                           },
                         ),
                       ),
@@ -188,7 +196,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                       //Do something when changing the item if you want.
                     },
                     onSaved: (value) {
-                      selectedValue = value.toString();
+                      _selectDoseFrequency = value.toString();
                     },
                   ),
                 ),
@@ -208,6 +216,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           keyboardType: TextInputType.number,
+                          controller: _doseDuration,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Enter duration';
@@ -273,7 +282,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                             //Do something when changing the item if you want.
                           },
                           onSaved: (value) {
-                            selectedValue = value.toString();
+                            _selectedDurationUnit = value.toString();
                           },
                         ),
                       ),
@@ -294,7 +303,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                     //height: 30,
                     padding: const EdgeInsets.all(8),
                     child: TextFormField(
-                        //controller: _textFieldController,
+                        controller: _directionOfUseController,
                         maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
                         decoration: const InputDecoration(
@@ -315,8 +324,19 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       onPressed: () {
+                        var form = _formKey.currentState;
                         if (_formKey.currentState!.validate()) {
-                          //valid flow
+                          form!.save();
+                          Navigator.pop(context, {
+                            'DrugCode': widget.drugCode,
+                            'DrugName': widget.drugName,
+                            'DrugDose': _doseController.text,
+                            'DoseUnits': _selectDoseUnits,
+                            'DosageRegimen': _selectDoseFrequency,
+                            'Duration': _doseDuration.text,
+                            'DurationUnits': _selectedDurationUnit,
+                            'DirectionOfUse': _directionOfUseController.text,
+                          });
                         }
                       },
                       child: const Text("Submit")),
