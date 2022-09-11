@@ -9,9 +9,9 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            //baseUrl: 'https://api.synapserx.com/api',
-            //baseUrl: 'https://192.168.98.116/api',
-            baseUrl: 'http://10.0.2.2:3000/api',
+            baseUrl: 'https://api.synapserx.com/api',
+            //baseUrl: 'https://192.168.1.157/api',
+            //baseUrl: 'http://10.0.2.2:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),

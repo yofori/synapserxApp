@@ -28,8 +28,10 @@ class _SelectMedicinesPageState extends State<SelectMedicinesPage> {
       context,
       MaterialPageRoute(
           builder: (context) => AddEditDrugPage(
+                title: 'Adding Drug',
                 drugCode: drugCode,
                 drugName: drugName,
+                addingNewDrug: true,
               )),
     );
     if (!mounted) return;
