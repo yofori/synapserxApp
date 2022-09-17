@@ -3,24 +3,26 @@ part 'medications.g.dart';
 
 @JsonSerializable()
 class Medications {
-  String drugId;
+  String drugCode;
   String? drugName;
-  String? routeOfAdministration;
   String? dose;
   String? dosageRegimen;
-  int? noOfDays;
+  String? duration;
+  String? durationUnits;
   String? status;
   String? sId;
+  String? directionOfUse;
 
   Medications(
-      {required this.drugId,
+      {required this.drugCode,
       this.drugName,
-      this.routeOfAdministration,
+      this.duration,
       this.dose,
       this.dosageRegimen,
-      this.noOfDays,
+      this.durationUnits,
       this.status,
-      this.sId});
+      this.sId,
+      this.directionOfUse});
 
   factory Medications.fromJson(Map<String, dynamic> json) =>
       _$MedicationsFromJson(json);

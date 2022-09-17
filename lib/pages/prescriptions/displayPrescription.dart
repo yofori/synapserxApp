@@ -96,7 +96,7 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
                                     width: double.infinity,
                                     child: Text(
                                         textAlign: TextAlign.left,
-                                        'Age: ${prescriptionInfo.pxAge}yrs  Gender: ${toBeginningOfSentenceCase(prescriptionInfo.pxgender)} '),
+                                        'Age: Gender: ${toBeginningOfSentenceCase(prescriptionInfo.pxgender)} '),
                                   ),
                                   const SizedBox(
                                     height: 5,
@@ -154,11 +154,11 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
                                               child: ListTile(
                                             leading: Text('${index + 1}'),
                                             title: Text(
-                                              '${prescriptionInfo.medications![index].routeOfAdministration.toString()} '
                                               '${prescriptionInfo.medications![index].drugName.toString()} '
                                               '${prescriptionInfo.medications![index].dose.toString()} '
                                               '${prescriptionInfo.medications![index].dosageRegimen.toString()} x '
-                                              '${prescriptionInfo.medications![index].noOfDays.toString()} days',
+                                              '${prescriptionInfo.medications![index].duration.toString()} '
+                                              '${prescriptionInfo.medications![index].durationUnits.toString()}',
                                               maxLines: 2,
                                             ),
                                           ));

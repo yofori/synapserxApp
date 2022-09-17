@@ -23,8 +23,8 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
         filteredMedicines = allMedicines = data;
         _isLoading = false;
       });
-      super.initState();
     });
+    super.initState();
   }
 
   void filterSearch(String query) async {

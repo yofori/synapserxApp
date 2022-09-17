@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:synapserx_prescriber/pages/widgets/addeditdrugs.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
+//import 'package:synapserx_prescriber/pages/widgets/addeditdrugs.dart';
 import 'package:synapserx_prescriber/pages/widgets/medicineslist.dart';
 
 class SelectMedicinesPage extends StatefulWidget {

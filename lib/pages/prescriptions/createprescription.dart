@@ -1,17 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:synapserx_prescriber/pages/widgets/addeditdrugs.dart';
-
-import '../widgets/selectMedicine.dart';
+import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/selectmedicine.dart';
 
 class CreatePrescriptionPage extends StatefulWidget {
-  const CreatePrescriptionPage({Key? key}) : super(key: key);
+  const CreatePrescriptionPage({Key? key, required this.patientID})
+      : super(key: key);
+  final String patientID;
 
   @override
   State<CreatePrescriptionPage> createState() => _CreatePrescriptionPageState();
 }
 
 class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
+  final DioClient _dioClient = DioClient();
   List<RxMedicines> prescribedMedicines = [
     RxMedicines(
         drugCode: 'R034466',
@@ -49,9 +52,23 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
             }
           });
         },
-        child: const Icon(Icons.add_to_queue),
+        child: const Icon(
+          Icons.add,
+          size: 36,
+        ),
       ),
-      appBar: AppBar(title: const Text('Create Prescription')),
+      appBar:
+          AppBar(title: const Text('Create Prescription'), actions: <Widget>[
+        // icon to create prescription on server
+        IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () {
+              submitNewPrescription();
+            }),
+        const SizedBox(
+          width: 20,
+        )
+      ]),
       body: Column(
         children: [
           Container(),
@@ -155,6 +172,42 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
       prescribedMedicines[index].durationUnits = value['DurationUnits'];
       prescribedMedicines[index].directionOfUse = value['DirectionOfUse'];
     });
+  }
+
+  Future<void> submitNewPrescription() async {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('Creating new prescription'),
+      backgroundColor: Colors.blue.shade300,
+    ));
+    var prescribedMedicinesMap = prescribedMedicines.map(((e) {
+      return {
+        "drugCode": e.drugCode,
+        "drugName": e.drugName,
+        "dose": e.drugDose,
+        "duration": e.duration,
+        "durationUnits": e.durationUnits,
+        "directionOfUse": e.directionOfUse,
+        "dosageUnits": e.dosageUnits,
+        "dosageRegimen": e.dosageRegimen,
+      };
+    })).toList();
+    List medicines = prescribedMedicinesMap.toList();
+    dynamic prescription = await _dioClient.creatPrescription(
+        patientID: widget.patientID, medicines: medicines);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (prescription != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('New prescription added'),
+        backgroundColor: Colors.green.shade300,
+      ));
+      Navigator.pop(context);
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Error: Unable to add patient'),
+        backgroundColor: Colors.red.shade300,
+      ));
+    }
   }
 }
 

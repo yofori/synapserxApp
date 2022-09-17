@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
+import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/models/user.dart';
@@ -9,9 +11,9 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            baseUrl: 'https://api.synapserx.com/api',
+            //baseUrl: 'https://api.synapserx.com/api',
             //baseUrl: 'https://192.168.1.157/api',
-            //baseUrl: 'http://10.0.2.2:3000/api',
+            baseUrl: 'http://10.0.2.2:3000/api',
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -81,7 +83,9 @@ class DioClient {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       throw e.toString();
     }
   }
@@ -104,10 +108,9 @@ class DioClient {
     }
   }
 
-  Future<List<Prescription>> getPxRx(
-      {required String patientuid, required String token}) async {
+  Future<List<Prescription>> getPxRx(String patientuid) async {
     try {
-      _dio.options.headers['Authorization'] = token;
+      _dio.options.headers['Authorization'] = GlobalData.accessToken;
       Response response = await _dio
           .get('/prescription/getpatientprescriptions?pxId=$patientuid');
       return (response.data as List)
@@ -115,10 +118,25 @@ class DioClient {
           .toList();
     } on DioError catch (err) {
       final errorMessage = DioException.fromDioError(err).toString();
-      if (err.response!.statusCode == 404) {
-        return [];
-      }
       throw errorMessage;
     }
+  }
+
+  Future<dynamic> creatPrescription(
+      {required String patientID, required List medicines}) async {
+    try {
+      _dio.options.headers['Authorization'] = GlobalData.accessToken;
+      Response response = await _dio.post(
+        '/prescription/create',
+        data: {'patientID': patientID, 'medications': medicines},
+      );
+      if (response.statusCode == 201) {
+        return response.data;
+      }
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    }
+    return null;
   }
 }
