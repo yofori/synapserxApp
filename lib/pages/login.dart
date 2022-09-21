@@ -38,13 +38,19 @@ class _LoginPageState extends State<LoginPage> {
 
       if (res['ErrorCode'] == null) {
         String accessToken = res['token'];
+        String refreshToken = res['refreshtoken'];
+        String username = res['username'];
         GlobalData.accessToken = accessToken;
+        GlobalData.refreshToken = refreshToken;
+        GlobalData.username = username;
         String fullname = res['firstname'] + ' ' + res['surname'];
         String mdcregno = res['mdcregno'];
         const storage = FlutterSecureStorage();
         await storage.write(key: "token", value: accessToken);
+        await storage.write(key: "refreshtoken", value: refreshToken);
         await storage.write(key: "fullname", value: fullname);
         await storage.write(key: "mdcregno", value: mdcregno);
+        await storage.write(key: "username", value: username);
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
