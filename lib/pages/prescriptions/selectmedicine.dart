@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
 //import 'package:synapserx_prescriber/pages/widgets/addeditdrugs.dart';
@@ -38,7 +39,7 @@ class _SelectMedicinesPageState extends State<SelectMedicinesPage> {
     if (!mounted) return;
     if (result != null) {
       Navigator.pop(context, result);
-      print(result);
+      log('$result');
     } else {
       Navigator.pop(context);
     }

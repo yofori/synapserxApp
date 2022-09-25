@@ -6,6 +6,7 @@ class CustomSynapseDropDown extends StatelessWidget {
   final String? value;
   final List<String> dropdownItems;
   final ValueChanged<String?>? onChanged;
+  final FormFieldSetter<String>? onSaved;
   final DropdownButtonBuilder? selectedItemBuilder;
   final Alignment? hintAlignment;
   final Alignment? valueAlignment;
@@ -34,6 +35,7 @@ class CustomSynapseDropDown extends StatelessWidget {
     this.value,
     this.validator,
     required this.dropdownItems,
+    this.onSaved,
     this.onChanged,
     this.selectedItemBuilder,
     this.hintAlignment,
@@ -100,6 +102,7 @@ class CustomSynapseDropDown extends StatelessWidget {
               ))
           .toList(),
       onChanged: onChanged,
+      onSaved: onSaved,
       selectedItemBuilder: selectedItemBuilder,
       icon: icon ?? const Icon(Icons.arrow_drop_down),
       iconSize: iconSize ?? 30,
@@ -109,13 +112,13 @@ class CustomSynapseDropDown extends StatelessWidget {
       buttonWidth: buttonWidth ?? 140,
       buttonPadding:
           buttonPadding ?? const EdgeInsets.only(left: 20, right: 10),
-      buttonDecoration: buttonDecoration ??
-          BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            border: Border.all(
-              color: Colors.black45,
-            ),
-          ),
+      // buttonDecoration: buttonDecoration ??
+      //     BoxDecoration(
+      //       borderRadius: BorderRadius.circular(5),
+      //       border: Border.all(
+      //         color: Colors.black45,
+      //       ),
+      //     ),
       buttonElevation: buttonElevation,
       itemHeight: itemHeight ?? 40,
       itemPadding: itemPadding ?? const EdgeInsets.only(left: 14, right: 14),

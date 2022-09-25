@@ -43,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         GlobalData.accessToken = accessToken;
         GlobalData.refreshToken = refreshToken;
         GlobalData.username = username;
+        GlobalData.password = passwordController.text;
         String fullname = res['firstname'] + ' ' + res['surname'];
         String mdcregno = res['mdcregno'];
         const storage = FlutterSecureStorage();
@@ -51,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         await storage.write(key: "fullname", value: fullname);
         await storage.write(key: "mdcregno", value: mdcregno);
         await storage.write(key: "username", value: username);
+        await storage.write(key: "password", value: passwordController.text);
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));

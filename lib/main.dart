@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/homepage.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -12,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: _title,
       initialRoute: '/',
       routes: {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/pages/widgets/customdropdown.dart';
 
 class AddEditDrugPage extends StatefulWidget {
@@ -68,14 +69,16 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
 
   String _selectDoseUnits = '';
   String _selectDoseFrequency = '';
-  String _selectedDurationUnit = 'Days';
+  String _selectedDurationUnit = '';
 
   @override
   void initState() {
     if (!widget.addingNewDrug) {
       _doseController.text = widget.drugDose!;
       _doseDuration.text = widget.duration!;
-      _directionOfUseController.text = widget.directionOfUse!;
+      if (widget.directionOfUse != '') {
+        _directionOfUseController.text = widget.directionOfUse ?? '';
+      }
       _selectDoseUnits = widget.doseUnits!;
       _selectDoseFrequency = widget.dosageRegimen!;
       _selectedDurationUnit = widget.durationUnits!;
@@ -116,12 +119,16 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           controller: _doseController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Enter dose of the drug';
                             }
+                            return null;
                           },
                           decoration: const InputDecoration(
                             isDense: true,
@@ -140,6 +147,9 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                                 child: CustomSynapseDropDown(
                                   dropdownItems: units,
                                   onChanged: (value) {},
+                                  onSaved: (value) {
+                                    _selectDoseUnits = value.toString();
+                                  },
                                   hint: 'Select Units',
                                   validator: (value) {
                                     if (value == null) {
@@ -155,6 +165,9 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                                   value: widget.doseUnits,
                                   dropdownItems: units,
                                   onChanged: (value) {},
+                                  onSaved: (value) {
+                                    _selectDoseUnits = value.toString();
+                                  },
                                   hint: 'Select Units',
                                 ),
                               ))
@@ -215,6 +228,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                             if (value == null) {
                               return 'Please select dosing frequency';
                             }
+                            return null;
                           },
                           onChanged: (value) {
                             //Do something when changing the item if you want.
@@ -268,6 +282,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                             if (value == null) {
                               return 'Please select dosing frequency';
                             }
+                            return null;
                           },
                           onChanged: (value) {
                             //Do something when changing the item if you want.
@@ -284,89 +299,74 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                       alignment: Alignment.centerLeft,
                       child: const Text('Duration of treatment')),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Flexible(
-                      flex: 40,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          controller: _doseDuration,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter duration';
-                            }
-                          },
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            //labelText: 'Enter duration',
-                            hintText: 'Enter duration of treatment',
-                          ),
+                Row(mainAxisSize: MainAxisSize.max, children: [
+                  Expanded(
+                    flex: 40,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        keyboardType: TextInputType.number,
+                        controller: _doseDuration,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter duration';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(12),
+                          border: OutlineInputBorder(),
+                          //labelText: 'Enter duration',
+                          hintText: 'Enter duration of treatment',
                         ),
                       ),
                     ),
-                    Flexible(
-                      flex: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: DropdownButtonFormField2(
-                          value: _selectedDurationUnit,
-                          decoration: InputDecoration(
-                            //Add isDense true and zero Padding.
-                            //Add Horizontal padding using buttonPadding and Vertical padding by increasing buttonHeight instead of add Padding here so that The whole TextField Button become clickable, and also the dropdown menu open under The whole TextField Button.
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
+                  ),
+                  Expanded(
+                    flex: 60,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: widget.addingNewDrug
+                          ? CustomSynapseDropDown(
+                              hint: 'Select duration type',
+                              dropdownItems: durationUnits,
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Select duration type';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                //Do something when changing the item if you want.
+                              },
+                              onSaved: (value) {
+                                _selectedDurationUnit = value.toString();
+                              },
+                            )
+                          : CustomSynapseDropDown(
+                              value: _selectedDurationUnit,
+                              hint: 'Select duration type',
+                              dropdownItems: durationUnits,
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Select duration type';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                //Do something when changing the item if you want.
+                              },
+                              onSaved: (value) {
+                                _selectedDurationUnit = value.toString();
+                              },
                             ),
-                            //Add more decoration as you want here
-                            //Add label If you want but add hint outside the decoration to be aligned in the button perfectly.
-                          ),
-                          isExpanded: true,
-                          hint: const Text(
-                            'Select duration type',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black45,
-                          ),
-                          iconSize: 30,
-                          buttonHeight: 60,
-                          buttonPadding:
-                              const EdgeInsets.only(left: 20, right: 10),
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          items: durationUnits
-                              .map((item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                          validator: (value) {
-                            if (value == '') {
-                              return 'Select duration type';
-                            }
-                          },
-                          onChanged: (value) {
-                            //Do something when changing the item if you want.
-                          },
-                          onSaved: (value) {
-                            _selectedDurationUnit = value.toString();
-                          },
-                        ),
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ]),
                 const SizedBox(
                   height: 20,
                 ),
@@ -392,19 +392,6 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                           fontSize: 14,
                           height: 1.5,
                         ))),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: CustomSynapseDropDown(
-                    onChanged: (value) {},
-                    dropdownItems: units,
-                    hint: 'Select Option',
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Select duration type';
-                      }
-                    },
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(

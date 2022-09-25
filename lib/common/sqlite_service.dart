@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_brace_in_string_interps
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -17,7 +18,7 @@ class SqliteService {
     bool exists = await databaseExists(path);
     if (!exists) {
       // Should happen only the first time you launch your application
-      print("Creating new copy from asset");
+      log("Creating new copy from asset");
 
       // Make sure the parent directory exists
       try {
@@ -32,7 +33,7 @@ class SqliteService {
       // Write and flush the bytes written
       await File(path).writeAsBytes(bytes, flush: true);
     } else {
-      print("Opening existing database");
+      log("Opening existing database");
     }
 // open the database
     return db = await openDatabase(path, readOnly: true);
