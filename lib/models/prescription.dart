@@ -5,6 +5,7 @@ part 'prescription.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Prescription {
+  @JsonKey(name: '_id')
   String? sId;
   String pxId;
   String pxSurname;

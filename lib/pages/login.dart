@@ -23,9 +23,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Processing Data'),
-        backgroundColor: Colors.green.shade300,
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('logging in......'),
+        backgroundColor: Color.fromARGB(255, 72, 160, 231),
       ));
 
       dynamic res = await _dioClient.loginUser(
@@ -56,6 +56,10 @@ class _LoginPageState extends State<LoginPage> {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('login successful'),
+          backgroundColor: Colors.green.shade300,
+        ));
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

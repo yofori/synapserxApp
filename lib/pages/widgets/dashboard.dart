@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/pages/login.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
 
 class HomeDashboardPage extends StatefulWidget {
@@ -10,6 +13,7 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
+  final DioClient _dioClient = DioClient();
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
@@ -31,121 +35,142 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+            tooltip: 'Logout',
+            child: const Icon(Icons.logout),
+            onPressed: () async {
+              _dioClient.logoutUser();
+              // implement signout here. Clear the secure storage and call logout api
+              const storage = FlutterSecureStorage();
+              await storage.deleteAll().whenComplete(() {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
+              });
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(const SnackBar(
+                  content: Text('Logged out Successfully'),
+                  backgroundColor: Colors.green,
+                ));
+            }),
         body: SingleChildScrollView(
-      child: Column(children: [
-        const SizedBox(
-          height: 15,
-        ),
-        Container(
-            margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.all(8),
-            width: double.infinity,
-            decoration: (BoxDecoration(
-              color: Colors.blue[50],
-              border: Border.all(
-                color: Colors.blue,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            )),
-            child: Column(
-              children: [
-                Text(
-                  greeting(),
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                FutureBuilder(
-                    future: getData('fullname'),
-                    builder: (context, AsyncSnapshot<String?> snapshot) {
-                      if (snapshot.hasError) return Text('${snapshot.error}');
-                      if (snapshot.hasData) return Text('${snapshot.data}');
-                      return const CircularProgressIndicator();
-                    }),
-                const SizedBox(
-                  height: 3,
-                ),
-                FutureBuilder(
-                    future: getData('mdcregno'),
-                    builder: (context, AsyncSnapshot<String?> snapshot) {
-                      if (snapshot.hasError) return Text('${snapshot.error}');
-                      if (snapshot.hasData) return Text('${snapshot.data}');
-                      return const CircularProgressIndicator();
-                    })
-              ],
-            )),
-        const SizedBox(
-          height: 10,
-        ),
-        Container(
-          padding: const EdgeInsets.all(0.0),
-          alignment: Alignment.center,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'What would you like to do?',
-                  textAlign: TextAlign.left,
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(20, 10, 20, 2.5),
-                  padding: const EdgeInsets.all(8),
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.newspaper,
-                      size: 48,
-                    ),
-                    label: const Text('Create A New Prescription'),
+          child: Column(children: [
+            const SizedBox(
+              height: 15,
+            ),
+            Container(
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(8),
+                width: double.infinity,
+                decoration: (BoxDecoration(
+                  color: Colors.blue[50],
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 1,
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
-                  padding: const EdgeInsets.all(8),
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const GetPrescriptionPage()));
-                    },
-                    icon: const Icon(
-                      Icons.download,
-                      size: 48,
+                  borderRadius: BorderRadius.circular(10),
+                )),
+                child: Column(
+                  children: [
+                    Text(
+                      greeting(),
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal),
                     ),
-                    label: const Text('Get an Existing Prescription'),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
-                  padding: const EdgeInsets.all(8),
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.edit_notifications,
-                      size: 48,
+                    const SizedBox(
+                      height: 5,
                     ),
-                    label: const Text('Modify a Prescription'),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-              ]),
-        ),
-      ]),
-    ));
+                    FutureBuilder(
+                        future: getData('fullname'),
+                        builder: (context, AsyncSnapshot<String?> snapshot) {
+                          if (snapshot.hasError)
+                            return Text('${snapshot.error}');
+                          if (snapshot.hasData) return Text('${snapshot.data}');
+                          return const CircularProgressIndicator();
+                        }),
+                    const SizedBox(
+                      height: 3,
+                    ),
+                    FutureBuilder(
+                        future: getData('mdcregno'),
+                        builder: (context, AsyncSnapshot<String?> snapshot) {
+                          if (snapshot.hasError)
+                            return Text('${snapshot.error}');
+                          if (snapshot.hasData) return Text('${snapshot.data}');
+                          return const CircularProgressIndicator();
+                        })
+                  ],
+                )),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.all(0.0),
+              alignment: Alignment.center,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text(
+                      'What would you like to do?',
+                      textAlign: TextAlign.left,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 10, 20, 2.5),
+                      padding: const EdgeInsets.all(8),
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.newspaper,
+                          size: 48,
+                        ),
+                        label: const Text('Create A New Prescription'),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
+                      padding: const EdgeInsets.all(8),
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const GetPrescriptionPage()));
+                        },
+                        icon: const Icon(
+                          Icons.download,
+                          size: 48,
+                        ),
+                        label: const Text('Get an Existing Prescription'),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
+                      padding: const EdgeInsets.all(8),
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.edit_notifications,
+                          size: 48,
+                        ),
+                        label: const Text('Modify a Prescription'),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ]),
+            ),
+          ]),
+        ));
   }
 }

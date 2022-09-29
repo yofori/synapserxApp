@@ -48,7 +48,7 @@ class Tokens extends Interceptor {
 
   Future<bool> refreshToken() async {
     var options = BaseOptions(
-      baseUrl: 'http://10.0.2.2:3000/api',
+      baseUrl: GlobalData.baseUrl,
       connectTimeout: 5000,
       receiveTimeout: 3000,
     );
@@ -156,8 +156,7 @@ class Tokens extends Interceptor {
   }
 
   Future<bool> login(String password) async {
-    Response res = await Dio().post<dynamic>(
-        'http://10.0.2.2:3000/api/user/login',
+    Response res = await Dio().post<dynamic>('${GlobalData.baseUrl}/user/login',
         data: {'username': GlobalData.username, 'password': password});
     if (res.statusCode == 201) {
       GlobalData.accessToken = res.data['token'];

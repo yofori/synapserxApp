@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
+import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/tokens.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
@@ -12,9 +13,7 @@ class DioClient {
   DioClient()
       : _dio = Dio(
           BaseOptions(
-            //baseUrl: 'https://api.synapserx.com/api',
-            //baseUrl: 'https://192.168.1.157/api',
-            baseUrl: 'http://10.0.2.2:3000/api',
+            baseUrl: GlobalData.baseUrl,
             connectTimeout: 5000,
             receiveTimeout: 3000,
           ),
@@ -54,6 +53,19 @@ class DioClient {
         return {'ErrorCode': 400, 'Message': errorMessage};
       }
     }
+  }
+
+  Future<dynamic> logoutUser() async {
+    try {
+      Response response = await _dio.get(
+        '/user/logout',
+      );
+      return response.data;
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      debugPrint(errorMessage);
+    }
+    return null;
   }
 
   Future<Prescription?> getPrescription(String prescriptionId) async {
@@ -123,7 +135,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> creatPrescription(
+  Future<dynamic> createPrescription(
       {required String patientID, required List medicines}) async {
     try {
       //_dio.options.headers['Authorization'] = GlobalData.accessToken;
@@ -137,6 +149,38 @@ class DioClient {
     } on DioError catch (err) {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;
+    }
+    return null;
+  }
+
+  Future<dynamic> deletePrescription({required String prescriptionID}) async {
+    try {
+      Response response =
+          await _dio.put('/prescription/delete/$prescriptionID');
+      if (response.statusCode == 200) {
+        return response.data;
+      }
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    }
+  }
+
+  Future<dynamic> updatePrescription(
+      {required String prescriptionID, required List medicines}) async {
+    try {
+      //_dio.options.headers['Authorization'] = GlobalData.accessToken;
+      Response response = await _dio.put(
+        '/prescription/update/$prescriptionID',
+        data: {'medications': medicines},
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      }
+    } on DioError catch (err) {
+      if (err.error.statusCode == 404) {
+        return null;
+      }
     }
     return null;
   }

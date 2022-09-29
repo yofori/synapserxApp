@@ -28,9 +28,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(
-        title: (const Text('SynapseRx')),
-      ),*/
       body: IndexedStack(children: [_screens[_selectedIndex]['screen']]),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

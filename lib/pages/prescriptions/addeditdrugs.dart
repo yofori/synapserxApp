@@ -120,10 +120,12 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r"[0-9./]")),
                           ],
                           controller: _doseController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Enter dose of the drug';

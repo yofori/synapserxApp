@@ -7,7 +7,7 @@ part of 'prescription.dart';
 // **************************************************************************
 
 Prescription _$PrescriptionFromJson(Map<String, dynamic> json) => Prescription(
-      sId: json['sId'] as String?,
+      sId: json['_id'] as String?,
       pxId: json['pxId'] as String,
       pxSurname: json['pxSurname'] as String,
       pxFirstname: json['pxFirstname'] as String,
@@ -30,7 +30,7 @@ Prescription _$PrescriptionFromJson(Map<String, dynamic> json) => Prescription(
 
 Map<String, dynamic> _$PrescriptionToJson(Prescription instance) =>
     <String, dynamic>{
-      'sId': instance.sId,
+      '_id': instance.sId,
       'pxId': instance.pxId,
       'pxSurname': instance.pxSurname,
       'pxFirstname': instance.pxFirstname,

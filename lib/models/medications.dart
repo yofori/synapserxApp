@@ -6,10 +6,12 @@ class Medications {
   String drugCode;
   String? drugName;
   String? dose;
+  String? dosageUnits;
   String? dosageRegimen;
   String? duration;
   String? durationUnits;
   String? status;
+  @JsonKey(name: '_id')
   String? sId;
   String? directionOfUse;
 
@@ -22,7 +24,8 @@ class Medications {
       this.durationUnits,
       this.status,
       this.sId,
-      this.directionOfUse});
+      this.directionOfUse,
+      this.dosageUnits});
 
   factory Medications.fromJson(Map<String, dynamic> json) =>
       _$MedicationsFromJson(json);

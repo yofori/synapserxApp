@@ -1,74 +1,79 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/selectmedicine.dart';
 
-class CreatePrescriptionPage extends StatefulWidget {
-  const CreatePrescriptionPage({Key? key, required this.patientID})
+class EditPrescriptionPage extends StatefulWidget {
+  const EditPrescriptionPage(
+      {Key? key,
+      required this.title,
+      required this.patientID,
+      required this.prescriptionID,
+      required this.isEditting})
       : super(key: key);
+  final String prescriptionID;
   final String patientID;
+  final bool isEditting;
+  final String title;
 
   @override
-  State<CreatePrescriptionPage> createState() => _CreatePrescriptionPageState();
+  State<EditPrescriptionPage> createState() => _EditPrescriptionPageState();
 }
 
-class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
+class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
+  List<RxMedicines> prescribedMedicines = [];
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEditting) {
+      getPrescription();
+    }
+  }
+
   final DioClient _dioClient = DioClient();
-  List<RxMedicines> prescribedMedicines = [
-    RxMedicines(
-        drugCode: 'R034466',
-        drugName: 'Methicillin',
-        drugDose: '250',
-        dosageRegimen: 'BD',
-        dosageUnits: 'mg',
-        duration: '7',
-        durationUnits: 'Days',
-        id: '1'),
-    RxMedicines(
-      drugCode: 'R035677',
-      drugName: 'Flucloxacillin',
-      drugDose: '500',
-      dosageRegimen: 'QID',
-      dosageUnits: 'mg',
-      duration: '30',
-      durationUnits: 'Days',
-      id: '2',
-    )
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Medication',
+        tooltip: 'Add New Medication',
         onPressed: () {
-          Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SelectMedicinesPage()))
-              .then((value) {
-            if (value != null) {
-              addMedicines(value);
-            }
+          setState(() {
+            widget.isEditting
+                ? submitChangesToPrescription()
+                : submitNewPrescription();
           });
         },
         child: const Icon(
-          Icons.add,
+          Icons.save_alt_outlined,
           size: 36,
         ),
       ),
-      appBar:
-          AppBar(title: const Text('Create Prescription'), actions: <Widget>[
+      appBar: AppBar(title: Text(widget.title), actions: <Widget>[
         // icon to create prescription on server
-        IconButton(
-            icon: const Icon(
-              Icons.save_alt,
-              size: 36,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              //fixedSize: const Size(30, 20),
+              //padding: const EdgeInsets.all(8.0),
+              primary: Colors.green,
             ),
             onPressed: () {
-              setState(() {
-                submitNewPrescription();
+              Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SelectMedicinesPage()))
+                  .then((value) {
+                if (value != null) {
+                  addMedicines(value);
+                }
               });
-            }),
+            },
+            child: const Text('Add Drug'),
+          ),
+        ),
         const SizedBox(
           width: 20,
         )
@@ -91,7 +96,7 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
                       prescribedMedicines[index].drugName,
                     ),
                     subtitle: Text(
-                      '${prescribedMedicines[index].drugDose}${prescribedMedicines[index].dosageUnits}  ${prescribedMedicines[index].dosageRegimen} x ${prescribedMedicines[index].duration} ${prescribedMedicines[index].durationUnits}', //
+                      '${prescribedMedicines[index].drugDose} ${prescribedMedicines[index].dosageUnits}  ${prescribedMedicines[index].dosageRegimen} x ${prescribedMedicines[index].duration} ${prescribedMedicines[index].durationUnits}', //
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -179,6 +184,46 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
     });
   }
 
+  Future<void> submitChangesToPrescription() async {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('updating prescription ...........'),
+      backgroundColor: Colors.blue.shade300,
+    ));
+    var prescribedMedicinesMap = prescribedMedicines.map(((e) {
+      return {
+        "drugCode": e.drugCode,
+        "drugName": e.drugName,
+        "dose": e.drugDose,
+        "duration": e.duration,
+        "durationUnits": e.durationUnits,
+        "directionOfUse": e.directionOfUse,
+        "dosageUnits": e.dosageUnits,
+        "dosageRegimen": e.dosageRegimen,
+      };
+    })).toList();
+    List medicines = prescribedMedicinesMap.toList();
+    dynamic prescription = await _dioClient.updatePrescription(
+        prescriptionID: widget.prescriptionID, medicines: medicines);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (prescription != null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Prescription updated'),
+        backgroundColor: Colors.green.shade300,
+      ));
+      setState(() {});
+      Navigator.pop(context);
+    } else {
+      log('could not save edits');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Error: Unable to update the prescription'),
+        backgroundColor: Colors.red.shade300,
+      ));
+    }
+  }
+
   Future<void> submitNewPrescription() async {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: const Text('Creating new prescription'),
@@ -204,17 +249,38 @@ class _CreatePrescriptionPageState extends State<CreatePrescriptionPage> {
     if (prescription != null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('New prescription added'),
+        content: const Text('Prescription added'),
         backgroundColor: Colors.green.shade300,
       ));
       Navigator.pop(context);
     } else {
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Error: Unable to add patient'),
+        content: const Text('Error: Unable to create a new prescription'),
         backgroundColor: Colors.red.shade300,
       ));
     }
+  }
+
+  getPrescription() async {
+    List retrievedMedicines = [];
+    var prescription = await _dioClient.getPrescription(widget.prescriptionID);
+    if (prescription != null) {
+      retrievedMedicines = prescription.medications!.toList(growable: true);
+      for (var element in retrievedMedicines) {
+        debugPrint(element.sId.toString());
+        prescribedMedicines.add(RxMedicines(
+            id: element.sId,
+            dosageRegimen: element.dosageRegimen,
+            drugCode: element.drugCode,
+            drugName: element.drugName,
+            drugDose: element.dose,
+            duration: element.duration,
+            durationUnits: element.durationUnits,
+            dosageUnits: element.dosageUnits));
+      }
+    }
+    setState(() {});
   }
 }
 
