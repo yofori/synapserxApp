@@ -3,6 +3,8 @@ import 'package:synapserx_prescriber/pages/homepage.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 void main() => runApp(const MyApp());
 
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       title: _title,
       initialRoute: '/',
       routes: {

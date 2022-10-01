@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/selectmedicine.dart';
 
@@ -185,10 +186,6 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
   }
 
   Future<void> submitChangesToPrescription() async {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text('updating prescription ...........'),
-      backgroundColor: Colors.blue.shade300,
-    ));
     var prescribedMedicinesMap = prescribedMedicines.map(((e) {
       return {
         "drugCode": e.drugCode,
@@ -204,31 +201,23 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     List medicines = prescribedMedicinesMap.toList();
     dynamic prescription = await _dioClient.updatePrescription(
         prescriptionID: widget.prescriptionID, medicines: medicines);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (prescription != null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Prescription updated'),
-        backgroundColor: Colors.green.shade300,
-      ));
-      setState(() {});
-      Navigator.pop(context);
+      scaffoldMessengerKey.currentState!
+          .showSnackBar(const SnackBar(
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.green,
+            content: Text(
+              "Prescription updated",
+            ),
+          ))
+          .closed
+          .then((_) => {Navigator.pop(navigatorKey.currentContext!)});
     } else {
       log('could not save edits');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Error: Unable to update the prescription'),
-        backgroundColor: Colors.red.shade300,
-      ));
     }
   }
 
   Future<void> submitNewPrescription() async {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text('Creating new prescription'),
-      backgroundColor: Colors.blue.shade300,
-    ));
     var prescribedMedicinesMap = prescribedMedicines.map(((e) {
       return {
         "drugCode": e.drugCode,
@@ -244,22 +233,18 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     List medicines = prescribedMedicinesMap.toList();
     dynamic prescription = await _dioClient.createPrescription(
         patientID: widget.patientID, medicines: medicines);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (prescription != null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Prescription added'),
-        backgroundColor: Colors.green.shade300,
-      ));
-      Navigator.pop(context);
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Error: Unable to create a new prescription'),
-        backgroundColor: Colors.red.shade300,
-      ));
-    }
+      scaffoldMessengerKey.currentState!
+          .showSnackBar(const SnackBar(
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.green,
+            content: Text(
+              "New Prescription Successfully Created",
+            ),
+          ))
+          .closed
+          .then((_) => {Navigator.pop(navigatorKey.currentContext!)});
+    } else {}
   }
 
   getPrescription() async {

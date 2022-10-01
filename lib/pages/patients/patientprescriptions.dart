@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
-import 'package:synapserx_prescriber/pages/prescriptions/createprescription.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
 
 class PatientPrescriptionsPage extends StatefulWidget {
@@ -122,7 +123,12 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                             IconButton(
                                 icon: const Icon(Icons.share),
                                 tooltip: 'Share Prescription',
-                                onPressed: () {}),
+                                onPressed: () {
+                                  _onShare(
+                                      navigatorKey.currentContext!,
+                                      snapshot.data![index].prescriberMDCRegNo
+                                          .toString());
+                                }),
                             const Text(
                               'Share ',
                               textAlign: TextAlign.center,
@@ -221,7 +227,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                           Column(
                             children: [
                               IconButton(
-                                  icon: const Icon(Icons.refresh),
+                                  icon: const Icon(Icons.copy),
                                   tooltip: 'Refill Prescription',
                                   onPressed: () {}),
                               const Text(
@@ -248,5 +254,12 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
         )),
       ]),
     );
+  }
+
+  void _onShare(BuildContext context, String prescription) async {
+    final box = context.findRenderObject() as RenderBox;
+    await Share.share(prescription,
+        subject: 'Your Prescription',
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }
