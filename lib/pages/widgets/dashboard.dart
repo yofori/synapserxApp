@@ -35,9 +35,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButton.extended(
             tooltip: 'Logout',
-            child: const Icon(Icons.logout),
+            label: const Text('Exit'),
+            icon: const Icon(Icons.logout),
             onPressed: () async {
               _dioClient.logoutUser();
               // implement signout here. Clear the secure storage and call logout api

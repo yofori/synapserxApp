@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/register.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
@@ -24,9 +26,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> login() async {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('logging in......'),
-        backgroundColor: Color.fromARGB(255, 72, 160, 231),
-      ));
+          content: Text('logging in......'),
+          backgroundColor: Color.fromARGB(255, 72, 160, 231),
+          duration: Duration(seconds: 2)));
 
       dynamic res = await _dioClient.loginUser(
         nameController.text.trim(),
@@ -62,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         ));
       } else {
         // ignore: use_build_context_synchronously
+        log('Error Logging in');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Error: ${res['Message']}'),
           backgroundColor: Colors.red.shade300,
@@ -73,7 +76,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
         child: Scaffold(
             body: Form(
                 key: _formKey,
@@ -170,17 +179,17 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ElevatedButton(
                                     onPressed: login,
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.indigo,
+                                        //primary: Colors.indigo,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 40, vertical: 15)),
+                                            horizontal: 40, vertical: 10)),
                                     child: const Text(
                                       'Login',
                                       style: TextStyle(
                                         fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                        //fontWeight: FontWeight.bold,
                                       ),
                                     ))),
                             const SizedBox(height: 15),

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
-import 'package:synapserx_prescriber/main.dart';
+import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
+
+import '../../common/pdf_prescription_api.dart';
 
 class PatientPrescriptionsPage extends StatefulWidget {
   const PatientPrescriptionsPage({
@@ -48,7 +50,10 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                         )));
             setState(() {});
           },
-          child: const Icon(Icons.post_add)),
+          child: const Icon(
+            Icons.post_add,
+            size: 30,
+          )),
       appBar: AppBar(title: const Text('Prescriptions')),
       body: Column(children: <Widget>[
         const SizedBox(height: 10),
@@ -124,10 +129,12 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                 icon: const Icon(Icons.share),
                                 tooltip: 'Share Prescription',
                                 onPressed: () {
-                                  _onShare(
-                                      navigatorKey.currentContext!,
-                                      snapshot.data![index].prescriberMDCRegNo
-                                          .toString());
+                                  generatePresciptionPdf(
+                                      snapshot.data![index].sId.toString());
+                                  // _onShare(
+                                  //     navigatorKey.currentContext!,
+                                  //     snapshot.data![index].prescriberMDCRegNo
+                                  //         .toString());
                                 }),
                             const Text(
                               'Share ',
@@ -261,5 +268,15 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
     await Share.share(prescription,
         subject: 'Your Prescription',
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
+
+  void generatePresciptionPdf(String prescriptionID) async {
+    Prescription? prescription =
+        await _dioClient.getPrescription(prescriptionID);
+    log(prescription!.pxFirstname.toString());
+    final pdfFile = await PdfPrescriptionApi.generate(prescription);
+    // ignore: use_build_context_synchronously
+    //PdfApi.sharePDF(context, pdfFile);
+    PdfApi.openFile(pdfFile);
   }
 }

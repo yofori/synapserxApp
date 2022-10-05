@@ -44,6 +44,16 @@ class Tokens extends Interceptor {
         return handler.next(err);
       }
     }
+    if ((err.response?.statusCode == 400) &&
+        (err.requestOptions.path == '/user/login')) {
+      scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: Color.fromARGB(255, 224, 13, 13),
+        content: Text(
+          "Login failed! check username and password",
+        ),
+      ));
+    }
   }
 
   Future<bool> refreshToken() async {

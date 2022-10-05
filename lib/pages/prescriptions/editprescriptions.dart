@@ -25,6 +25,7 @@ class EditPrescriptionPage extends StatefulWidget {
 
 class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
   List<RxMedicines> prescribedMedicines = [];
+  bool isSaveButtonDisabled = true;
   @override
   void initState() {
     super.initState();
@@ -41,13 +42,19 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         tooltip: 'Add New Medication',
         onPressed: () {
           setState(() {
-            widget.isEditting
-                ? submitChangesToPrescription()
-                : submitNewPrescription();
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SelectMedicinesPage()))
+                .then((value) {
+              if (value != null) {
+                addMedicines(value);
+              }
+            });
           });
         },
         child: const Icon(
-          Icons.save_alt_outlined,
+          Icons.add,
           size: 36,
         ),
       ),
@@ -61,98 +68,108 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
               //padding: const EdgeInsets.all(8.0),
               primary: Colors.green,
             ),
-            onPressed: () {
-              Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SelectMedicinesPage()))
-                  .then((value) {
-                if (value != null) {
-                  addMedicines(value);
-                }
-              });
-            },
-            child: const Text('Add Drug'),
+            onPressed: isSaveButtonDisabled
+                ? null
+                : () {
+                    widget.isEditting
+                        ? submitChangesToPrescription()
+                        : submitNewPrescription();
+                  },
+            child: const Text('Save'),
           ),
         ),
         const SizedBox(
           width: 20,
         )
       ]),
-      body: Column(
-        children: [
-          Container(),
-          Expanded(
-            child: ListView.builder(
-                itemCount: prescribedMedicines.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                      child: ListTile(
-                    horizontalTitleGap: 2,
-                    leading: Text(
-                      '${index + 1}.',
-                      textAlign: TextAlign.center,
-                    ),
-                    title: Text(
-                      prescribedMedicines[index].drugName,
-                    ),
-                    subtitle: Text(
-                      '${prescribedMedicines[index].drugDose} ${prescribedMedicines[index].dosageUnits}  ${prescribedMedicines[index].dosageRegimen} x ${prescribedMedicines[index].duration} ${prescribedMedicines[index].durationUnits}', //
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddEditDrugPage(
-                                            title: 'Editting Drug',
-                                            addingNewDrug: false,
-                                            drugCode: prescribedMedicines[index]
-                                                .drugCode,
-                                            drugName: prescribedMedicines[index]
-                                                .drugName,
-                                            drugDose: prescribedMedicines[index]
-                                                .drugDose,
-                                            doseUnits:
-                                                prescribedMedicines[index]
-                                                    .dosageUnits,
-                                            dosageRegimen:
-                                                prescribedMedicines[index]
-                                                    .dosageRegimen,
-                                            duration: prescribedMedicines[index]
-                                                .duration,
-                                            durationUnits:
-                                                prescribedMedicines[index]
-                                                    .durationUnits,
-                                            directionOfUse:
-                                                prescribedMedicines[index]
-                                                    .directionOfUse,
-                                          ))).then((value) {
-                                if (value != null) {
-                                  editMedicines(value, index);
-                                }
-                              });
-                            },
-                            icon: const Icon(Icons.edit)),
-                        IconButton(
-                            onPressed: () {
-                              prescribedMedicines.removeWhere((element) {
-                                return element.id ==
-                                    prescribedMedicines[index].id;
-                              });
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.delete)),
-                      ],
-                    ),
-                  ));
-                }),
-          )
-        ],
-      ),
+      body: prescribedMedicines.isNotEmpty
+          ? Column(
+              children: [
+                Container(),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: prescribedMedicines.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                            child: ListTile(
+                          horizontalTitleGap: 2,
+                          leading: Text(
+                            '${index + 1}.',
+                            textAlign: TextAlign.center,
+                          ),
+                          title: Text(
+                            prescribedMedicines[index].drugName,
+                          ),
+                          subtitle: Text(
+                            '${prescribedMedicines[index].drugDose} ${prescribedMedicines[index].dosageUnits}  ${prescribedMedicines[index].dosageRegimen} x ${prescribedMedicines[index].duration} ${prescribedMedicines[index].durationUnits}', //
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddEditDrugPage(
+                                                  title: 'Editting Drug',
+                                                  addingNewDrug: false,
+                                                  drugCode:
+                                                      prescribedMedicines[index]
+                                                          .drugCode,
+                                                  drugName:
+                                                      prescribedMedicines[index]
+                                                          .drugName,
+                                                  drugDose:
+                                                      prescribedMedicines[index]
+                                                          .drugDose,
+                                                  doseUnits:
+                                                      prescribedMedicines[index]
+                                                          .dosageUnits,
+                                                  dosageRegimen:
+                                                      prescribedMedicines[index]
+                                                          .dosageRegimen,
+                                                  duration:
+                                                      prescribedMedicines[index]
+                                                          .duration,
+                                                  durationUnits:
+                                                      prescribedMedicines[index]
+                                                          .durationUnits,
+                                                  directionOfUse:
+                                                      prescribedMedicines[index]
+                                                          .directionOfUse,
+                                                ))).then((value) {
+                                      if (value != null) {
+                                        editMedicines(value, index);
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(Icons.edit)),
+                              IconButton(
+                                  onPressed: () {
+                                    prescribedMedicines.removeWhere((element) {
+                                      return element.id ==
+                                          prescribedMedicines[index].id;
+                                    });
+                                    isSaveButtonDisabled =
+                                        prescribedMedicines.isEmpty;
+                                    setState(() {});
+                                  },
+                                  icon: const Icon(Icons.delete)),
+                            ],
+                          ),
+                        ));
+                      }),
+                )
+              ],
+            )
+          : const Center(
+              child: Text(
+                'There are no medicines in the Prescription \n \n Click "+" to add',
+                textAlign: TextAlign.center,
+              ),
+            ),
     );
   }
 
@@ -169,6 +186,8 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         directionOfUse: value['DirectionOfUse'],
         id: (prescribedMedicines.length + 1).toString(),
       ));
+      //enable save button
+      isSaveButtonDisabled = false;
     });
   }
 
@@ -182,6 +201,8 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       prescribedMedicines[index].duration = value['Duration'];
       prescribedMedicines[index].durationUnits = value['DurationUnits'];
       prescribedMedicines[index].directionOfUse = value['DirectionOfUse'];
+      //enable the save button
+      isSaveButtonDisabled = false;
     });
   }
 
