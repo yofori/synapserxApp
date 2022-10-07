@@ -1,7 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
 
@@ -33,28 +34,95 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-            tooltip: 'Logout',
-            label: const Text('Exit'),
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              _dioClient.logoutUser();
-              // implement signout here. Clear the secure storage and call logout api
-              const storage = FlutterSecureStorage();
-              await storage.deleteAll().whenComplete(() {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
-              });
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context)
-                ..removeCurrentSnackBar()
-                ..showSnackBar(const SnackBar(
-                  content: Text('Logged out Successfully'),
-                  backgroundColor: Colors.green,
-                ));
-            }),
+        appBar: AppBar(
+          title: const Text('SynapseRx'),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 27,
+                      backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                          maxRadius: 25,
+                          child: Text(
+                            GlobalData.firstname[0] + GlobalData.surname[0],
+                            style: const TextStyle(fontSize: 20),
+                          )),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      GlobalData.fullname,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      GlobalData.mdcregno,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.person_add_alt),
+                title: const Text('Invite Colleagues'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Settings ....'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Sign Out'),
+                onTap: () async {
+                  logout();
+                },
+              ),
+              const Divider(),
+              const SizedBox(height: 30),
+              BarcodeWidget(
+                barcode: Barcode.qrCode(), // Barcode type and settings
+                data: GlobalData.prescriberid, // Content
+                width: 120,
+                height: 120,
+              ),
+              const SizedBox(height: 10),
+              const Center(
+                child: SizedBox(
+                  height: 40,
+                  width: 120,
+                  child: Text(
+                    'Show this QR Code to Patients to add you as their prescriber',
+                    style: TextStyle(fontSize: 12),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(children: [
             const SizedBox(
@@ -88,8 +156,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     FutureBuilder(
                         future: getData('fullname'),
                         builder: (context, AsyncSnapshot<String?> snapshot) {
-                          if (snapshot.hasError)
+                          if (snapshot.hasError) {
                             return Text('${snapshot.error}');
+                          }
                           if (snapshot.hasData) return Text('${snapshot.data}');
                           return const CircularProgressIndicator();
                         }),
@@ -99,8 +168,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     FutureBuilder(
                         future: getData('mdcregno'),
                         builder: (context, AsyncSnapshot<String?> snapshot) {
-                          if (snapshot.hasError)
+                          if (snapshot.hasError) {
                             return Text('${snapshot.error}');
+                          }
                           if (snapshot.hasData) return Text('${snapshot.data}');
                           return const CircularProgressIndicator();
                         })
@@ -173,5 +243,22 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
             ),
           ]),
         ));
+  }
+
+  void logout() async {
+    _dioClient.logoutUser();
+    // implement signout here. Clear the secure storage and call logout api
+    const storage = FlutterSecureStorage();
+    await storage.deleteAll().whenComplete(() {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
+    });
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(const SnackBar(
+        content: Text('Logged out Successfully'),
+        backgroundColor: Colors.green,
+      ));
   }
 }

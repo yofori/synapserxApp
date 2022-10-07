@@ -82,14 +82,17 @@ class PdfPrescriptionApi {
       );
 
   static Widget buildInvoice(Prescription prescription) {
+    int i = 1;
     final headers = [
+      '#',
       'Name of Medication',
       'Dose',
-      'Dosage Regimen',
+      'Dosage\nRegimen',
       'Duration',
     ];
     final data = prescription.medications!.map((item) {
       return [
+        '${(i++)}',
         item.drugName,
         '${item.dose} ${item.dosageUnits}',
         '${item.dosageRegimen}',
@@ -106,9 +109,10 @@ class PdfPrescriptionApi {
       cellHeight: 30,
       cellAlignments: {
         0: Alignment.centerLeft,
-        1: Alignment.centerRight,
-        2: Alignment.centerRight,
-        3: Alignment.centerRight,
+        1: Alignment.centerLeft,
+        2: Alignment.centerLeft,
+        3: Alignment.center,
+        4: Alignment.centerLeft,
       },
     );
   }
