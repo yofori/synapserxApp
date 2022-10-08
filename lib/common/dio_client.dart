@@ -49,11 +49,8 @@ class DioClient {
       );
 
       return response.data;
-    } on DioError catch (err) {
-      final errorMessage = DioException.fromDioError(err).toString();
-      if (err.response?.statusCode == 400 || err.response?.statusCode == 401) {
-        return {'ErrorCode': 400, 'Message': errorMessage};
-      }
+    } catch (err) {
+      return null;
     }
   }
 

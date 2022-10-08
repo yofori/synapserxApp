@@ -16,6 +16,7 @@ class PatientsPage extends StatefulWidget {
 }
 
 class _PatientsPageState extends State<PatientsPage> {
+  GlobalKey _key = GlobalKey();
   static String accessToken = GlobalData.accessToken;
   final DioClient _dioClient = DioClient();
   final TextEditingController _textController = TextEditingController();
@@ -67,86 +68,92 @@ class _PatientsPageState extends State<PatientsPage> {
           navigateToAddAssociation();
         },
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: FutureBuilder(
-              builder: (context, AsyncSnapshot<List<Associations>> snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return snapshot.data![index].patientFullname
-                              .toLowerCase()
-                              .contains(searchString)
-                          ? ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PatientPrescriptionsPage(
-                                            patientuid: snapshot
-                                                .data![index].patientuid,
-                                            patientName: snapshot
-                                                .data![index].patientFullname,
-                                          )),
-                                );
-                              },
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundColor: Colors
-                                    .primaries[index % Colors.primaries.length],
-                                child: Text(
-                                  getInitials(
-                                    snapshot.data![index].patientFullname
-                                        .toString(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _refresh();
+        },
+        child: Column(
+          key: _key,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: FutureBuilder(
+                builder: (context, AsyncSnapshot<List<Associations>> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return snapshot.data![index].patientFullname
+                                .toLowerCase()
+                                .contains(searchString)
+                            ? ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PatientPrescriptionsPage(
+                                              patientuid: snapshot
+                                                  .data![index].patientuid,
+                                              patientName: snapshot
+                                                  .data![index].patientFullname,
+                                            )),
+                                  );
+                                },
+                                leading: CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: Colors.primaries[
+                                      index % Colors.primaries.length],
+                                  child: Text(
+                                    getInitials(
+                                      snapshot.data![index].patientFullname
+                                          .toString(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              title: Container(
-                                //height: 43,
-                                decoration: const BoxDecoration(
-                                    //border: Border(
-                                    //bottom: BorderSide(color: Colors.grey)),
-                                    ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                      '${snapshot.data?[index].patientFullname}'),
+                                title: Container(
+                                  //height: 43,
+                                  decoration: const BoxDecoration(
+                                      //border: Border(
+                                      //bottom: BorderSide(color: Colors.grey)),
+                                      ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        '${snapshot.data?[index].patientFullname}'),
+                                  ),
                                 ),
-                              ),
-                              subtitle: Text(
-                                  'Status: ${snapshot.data?[index].status}'),
-                            )
-                          : Container();
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider(
-                        height: 2,
-                        color: Colors.grey,
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Something went wrong :('));
-                }
-                return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
-                      child: SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: CircularProgressIndicator(),
-                      ),
-                    ));
-              },
-              future: associations,
+                                subtitle: Text(
+                                    'Status: ${snapshot.data?[index].status}'),
+                              )
+                            : Container();
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(
+                          height: 2,
+                          color: Colors.grey,
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text('Something went wrong :('));
+                  }
+                  return SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: const Center(
+                        child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: CircularProgressIndicator(),
+                        ),
+                      ));
+                },
+                future: associations,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -165,5 +172,13 @@ class _PatientsPageState extends State<PatientsPage> {
         associations = fetchAssociations();
       });
     });
+  }
+
+  Future<void> _refresh() async {
+    if (mounted) {
+      _key = GlobalKey();
+      setState(() {});
+    }
+    Future.value(null);
   }
 }

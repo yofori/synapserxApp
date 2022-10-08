@@ -54,6 +54,16 @@ class Tokens extends Interceptor {
         ),
       ));
     }
+    if ((DioErrorType.connectTimeout == err.type) ||
+        (DioErrorType.receiveTimeout == err.type)) {
+      scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: Color.fromARGB(255, 224, 13, 13),
+        content: Text(
+          "Server is not reachable. Please verify your internet connection and try again",
+        ),
+      ));
+    }
   }
 
   Future<bool> refreshToken() async {
