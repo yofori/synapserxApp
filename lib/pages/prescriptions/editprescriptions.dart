@@ -11,6 +11,9 @@ class EditPrescriptionPage extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.patientID,
+      required this.patientName,
+      required this.pxGender,
+      required this.pxAge,
       required this.prescriptionID,
       required this.isEditting})
       : super(key: key);
@@ -18,6 +21,9 @@ class EditPrescriptionPage extends StatefulWidget {
   final String patientID;
   final bool isEditting;
   final String title;
+  final String patientName;
+  final String pxGender;
+  final String pxAge;
 
   @override
   State<EditPrescriptionPage> createState() => _EditPrescriptionPageState();

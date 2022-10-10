@@ -41,6 +41,15 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
                           ),
                         ));
                   } else {
+                    if (snapshot.hasError) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: const Center(
+                          child: Text('No Prescription Found'),
+                        ),
+                      );
+                    }
+
                     if (snapshot.hasData) {
                       Prescription? prescriptionInfo = snapshot.data;
                       if (prescriptionInfo != null) {

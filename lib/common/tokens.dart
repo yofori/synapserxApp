@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
@@ -40,7 +42,6 @@ class Tokens extends Interceptor {
             return handler.resolve(await retry(err.requestOptions));
           }
         }
-
         return handler.next(err);
       }
     }
@@ -64,6 +65,11 @@ class Tokens extends Interceptor {
         ),
       ));
     }
+    // if ((err.response?.statusCode == 404)) {
+    //   log('Error Trapped');
+    //   return handler.next(err);
+    // }
+    return handler.next(err);
   }
 
   Future<bool> refreshToken() async {

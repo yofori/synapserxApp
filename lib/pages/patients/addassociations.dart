@@ -30,20 +30,16 @@ class _AddAssociationsPageState extends State<AddAssociationsPage> {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
       //print(barcodeScanRes);
-      _scanBarcode = barcodeScanRes;
-      addAssociation();
+      if (!mounted) return;
+      if (barcodeScanRes != '-1') {
+        setState(() {
+          _scanBarcode = barcodeScanRes;
+          addAssociation();
+        });
+      }
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _scanBarcode = barcodeScanRes;
-    });
   }
 
   @override
@@ -162,7 +158,6 @@ class _AddAssociationsPageState extends State<AddAssociationsPage> {
           )));
 
   Future<void> addAssociation() async {
-    patientidController.text = _scanBarcode;
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Text('Processing Data'),

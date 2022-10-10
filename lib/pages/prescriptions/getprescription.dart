@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/services.dart';
@@ -26,20 +28,16 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
       //print(barcodeScanRes);
-      _scanBarcode = barcodeScanRes;
-      getprescription();
+      if (!mounted) return;
+      if (barcodeScanRes != '-1') {
+        setState(() {
+          _scanBarcode = barcodeScanRes;
+          getprescription();
+        });
+      }
     } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
+      log('Platform related issues');
     }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _scanBarcode = barcodeScanRes;
-    });
   }
 
   @override

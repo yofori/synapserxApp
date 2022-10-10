@@ -48,6 +48,9 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                           prescriptionID: '',
                           isEditting: false,
                           patientID: widget.patientuid,
+                          patientName: '',
+                          pxAge: '',
+                          pxGender: '',
                         )));
             setState(() {});
           },
@@ -166,6 +169,13 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                                   patientID: snapshot
                                                       .data![index].pxId
                                                       .toString(),
+                                                  patientName:
+                                                      '${snapshot.data![index].pxFirstname} ${snapshot.data![index].pxSurname}}',
+                                                  pxAge: snapshot
+                                                      .data![index].pxAge
+                                                      .toString(),
+                                                  pxGender: snapshot
+                                                      .data![index].pxgender,
                                                 )));
                                     setState(() {});
                                   }),

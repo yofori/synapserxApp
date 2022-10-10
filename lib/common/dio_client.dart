@@ -7,6 +7,7 @@ import 'package:synapserx_prescriber/common/logging.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/tokens.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
+import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/models/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -47,7 +48,6 @@ class DioClient {
         '/user/login',
         data: {'username': username, 'password': password},
       );
-
       return response.data;
     } catch (err) {
       return null;
@@ -72,13 +72,27 @@ class DioClient {
       Response response = await _dio.get(
         '/prescription/$prescriptionId',
       );
-      return Prescription.fromJson(response.data);
-    } on DioError catch (err) {
-      final errorMessage = DioException.fromDioError(err).toString();
-      throw errorMessage;
+      if (response.statusCode == 200) {
+        return Prescription.fromJson(response.data);
+      }
     } catch (e) {
       throw e.toString();
     }
+    return null;
+  }
+
+  Future<Patient?> getPatientDetails(String patientId) async {
+    try {
+      Response response = await _dio.get(
+        '/patient/$patientId',
+      );
+      if (response.statusCode == 200) {
+        return Patient.fromJson(response.data);
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+    return null;
   }
 
   Future<List<Associations>> getAssociations(String token) async {
