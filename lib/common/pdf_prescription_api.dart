@@ -14,7 +14,7 @@ class PdfPrescriptionApi {
         buildHeader(prescription),
         SizedBox(height: 3 * PdfPageFormat.cm),
         buildTitle(prescription),
-        buildInvoice(prescription),
+        buildPrescription(prescription),
       ],
       footer: (context) => buildFooter(prescription),
     ));
@@ -81,7 +81,7 @@ class PdfPrescriptionApi {
         ],
       );
 
-  static Widget buildInvoice(Prescription prescription) {
+  static Widget buildPrescription(Prescription prescription) {
     int i = 1;
     final headers = [
       '#',

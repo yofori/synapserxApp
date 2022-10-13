@@ -1,12 +1,12 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/main.dart';
+import 'package:synapserx_prescriber/common/auth.dart';
 
 class Tokens extends Interceptor {
+  final DioClient _dioClient = DioClient();
   static const storage = FlutterSecureStorage();
   BuildContext context = navigatorKey.currentContext!;
   TextEditingController textFieldController = TextEditingController();

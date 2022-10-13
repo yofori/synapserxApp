@@ -2,12 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/common/pdf_api.dart';
-import 'package:synapserx_prescriber/models/prescription.dart';
+import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
-
 import '../../common/pdf_prescription_api.dart';
 
 class PatientPrescriptionsPage extends StatefulWidget {
@@ -28,10 +26,14 @@ class PatientPrescriptionsPage extends StatefulWidget {
 class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
   final DioClient _dioClient = DioClient();
   GlobalKey _key = GlobalKey();
+  Patient patient = Patient();
+  int pxAge = 0;
+  String pxGender = '';
 
   @override
   void initState() {
     super.initState();
+    getPatientDetails();
   }
 
   @override
@@ -48,9 +50,9 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                           prescriptionID: '',
                           isEditting: false,
                           patientID: widget.patientuid,
-                          patientName: '',
-                          pxAge: '',
-                          pxGender: '',
+                          patientName: widget.patientName.toString(),
+                          pxAge: pxAge.toString(),
+                          pxGender: pxGender,
                         )));
             setState(() {});
           },
@@ -59,10 +61,25 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
             size: 30,
           )),
       appBar: AppBar(title: const Text('Prescriptions')),
-      body: Column(children: <Widget>[
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+          Widget>[
         const SizedBox(height: 10),
-        Text('Patient: ${widget.patientName}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 5, 10, 5),
+          child: Text('Name: ${widget.patientName.toUpperCase()}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
+          child: Text('Sex: $pxGender   Age: $pxAge',
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontSize: 16,
+              )),
+        ),
         const SizedBox(height: 10),
         Expanded(
             child: FutureBuilder<List<Prescription>>(
@@ -170,7 +187,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                                       .data![index].pxId
                                                       .toString(),
                                                   patientName:
-                                                      '${snapshot.data![index].pxFirstname} ${snapshot.data![index].pxSurname}}',
+                                                      '${snapshot.data![index].pxFirstname} ${snapshot.data![index].pxSurname}',
                                                   pxAge: snapshot
                                                       .data![index].pxAge
                                                       .toString(),
@@ -223,8 +240,9 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                                           Navigator.pop(
                                                               context),
                                                           setState(() {
-                                                            if (!mounted)
+                                                            if (!mounted) {
                                                               return;
+                                                            }
                                                             ScaffoldMessenger
                                                                     .of(context)
                                                                 .showSnackBar(
@@ -299,5 +317,30 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
       setState(() {});
     }
     Future.value(null);
+  }
+
+  Future<void> getPatientDetails() async {
+    patient = (await _dioClient.getPatientDetails(widget.patientuid))!;
+    setState(() {
+      pxAge = calculateAge(patient.dateOfBirth!);
+      pxGender = patient.gender!.toUpperCase();
+    });
+  }
+
+  calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
   }
 }

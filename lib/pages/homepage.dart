@@ -27,28 +27,63 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(children: [_screens[_selectedIndex]['screen']]),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'My Patients',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services),
-            label: 'Medicines',
-          )
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 65, 116, 209),
-        onTap: _onItemTapped,
+    return WillPopScope(
+      onWillPop: () => _onWillPop(context),
+      child: Scaffold(
+        body: IndexedStack(children: [_screens[_selectedIndex]['screen']]),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.people),
+              label: 'My Patients',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.medical_services),
+              label: 'Medicines',
+            )
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: const Color.fromARGB(255, 65, 116, 209),
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
+
+  AlertDialog _buildExitDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Please confirm'),
+      content: const Text('Do you want to exit the app?'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('No'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Yes'),
+        ),
+      ],
+    );
+  }
+
+  Future<bool> _onWillPop(BuildContext context) async {
+    bool? exitResult = await showDialog(
+      context: context,
+      builder: (context) => _buildExitDialog(context),
+    );
+    return exitResult ?? false;
+  }
+
+  // Future<bool?> _showExitDialog(BuildContext context) async {
+  //   return await showDialog(
+  //     context: context,
+  //     builder: (context) => _buildExitDialog(context),
+  //   );
+  // }
 }

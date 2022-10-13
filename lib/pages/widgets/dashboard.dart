@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';

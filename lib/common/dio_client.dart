@@ -1,15 +1,10 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/tokens.dart';
-import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/models/models.dart';
-import 'package:synapserx_prescriber/models/prescription.dart';
-import 'package:synapserx_prescriber/models/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class DioClient {
@@ -40,31 +35,6 @@ class DioClient {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;
     }
-  }
-
-  Future<dynamic> loginUser(String username, String password) async {
-    try {
-      Response response = await _dio.post(
-        '/user/login',
-        data: {'username': username, 'password': password},
-      );
-      return response.data;
-    } catch (err) {
-      return null;
-    }
-  }
-
-  Future<dynamic> logoutUser() async {
-    try {
-      Response response = await _dio.get(
-        '/user/logout',
-      );
-      return response.data;
-    } on DioError catch (err) {
-      final errorMessage = DioException.fromDioError(err).toString();
-      debugPrint(errorMessage);
-    }
-    return null;
   }
 
   Future<Prescription?> getPrescription(String prescriptionId) async {

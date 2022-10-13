@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/register.dart';
-import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/pages/forgotten_password.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'homepage.dart';
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                       ))),
                               const SizedBox(height: 15),
-                              const Text('Do not have account?'),
+                              const Text('Do not have an account?'),
                               const SizedBox(height: 1),
                               TextButton(
                                 child: const Text(
