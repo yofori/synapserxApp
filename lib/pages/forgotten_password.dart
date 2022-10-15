@@ -90,7 +90,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Password reset instructions have been emailed to you'),
+                              'Password reset instructions have been emailed to the email provided'),
                         ),
                       );
                       Navigator.pushReplacementNamed(context, '/');
