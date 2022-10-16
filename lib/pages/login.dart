@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/register.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
@@ -30,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: Color.fromARGB(255, 72, 160, 231),
           duration: Duration(seconds: 2)));
 
-      dynamic res = await _dioClient.loginUser(
+      Response res = await _dioClient.loginUser(
         nameController.text.trim(),
         passwordController.text,
       );
@@ -38,19 +39,19 @@ class _LoginPageState extends State<LoginPage> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      if (res['ErrorCode'] == null) {
-        String accessToken = res['token'];
-        String refreshToken = res['refreshtoken'];
-        String username = res['username'];
+      if (res.statusCode == 201) {
+        String accessToken = res.data['token'];
+        String refreshToken = res.data['refreshtoken'];
+        String username = res.data['username'];
         GlobalData.accessToken = accessToken;
         GlobalData.refreshToken = refreshToken;
         GlobalData.username = username;
         GlobalData.password = passwordController.text;
-        String fullname = res['firstname'] + ' ' + res['surname'];
-        String firstname = res['firstname'];
-        String surname = res['surname'];
-        String mdcregno = res['mdcregno'];
-        String prescriberid = res['id'];
+        String fullname = res.data['firstname'] + ' ' + res.data['surname'];
+        String firstname = res.data['firstname'];
+        String surname = res.data['surname'];
+        String mdcregno = res.data['mdcregno'];
+        String prescriberid = res.data['id'];
         GlobalData.fullname = fullname;
         GlobalData.surname = surname;
         GlobalData.mdcregno = mdcregno;
@@ -77,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         // ignore: use_build_context_synchronously
         log('Error Logging in');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: ${res['Message']}'),
+          content: Text('Error: ${res.data['message']}'),
           backgroundColor: Colors.red.shade300,
         ));
       }

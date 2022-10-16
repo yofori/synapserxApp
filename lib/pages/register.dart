@@ -174,8 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             hintText: 'Enter your email address'),
                         keyboardType: TextInputType.emailAddress,
                         validator: (val) {
-                          // ignore: prefer_is_not_empty
-                          if (!(val!.isEmpty) &&
+                          if ((val!.isNotEmpty) &&
                               !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
                                   .hasMatch(val)) {
                             return "Enter a valid email address";
@@ -329,7 +328,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           children: [
                             const Text('Have an account?'),
                             TextButton(
-                                onPressed: () => Navigator.push(
+                                onPressed: () => Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>

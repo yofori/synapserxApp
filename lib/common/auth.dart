@@ -16,16 +16,15 @@ class DioClient {
 
   final Dio _dio;
 
-  Future<dynamic> loginUser(String username, String password) async {
+  Future loginUser(String username, String password) async {
     try {
       Response response = await _dio.post(
         '/user/login',
         data: {'username': username, 'password': password},
       );
-      return response.data;
+      return response;
     } on DioError catch (err) {
-      final errorMessage = DioException.fromDioError(err).toString();
-      log(errorMessage);
+      return err.response;
     }
   }
 
