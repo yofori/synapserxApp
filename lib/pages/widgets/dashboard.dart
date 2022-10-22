@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/common/service.dart';
+import 'package:synapserx_prescriber/pages/changepassword.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
 
@@ -85,13 +86,14 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Settings ....'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
+                  leading: const Icon(Icons.key),
+                  title: const Text('Change Password ....'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ChangePasswordPage()));
+                  }),
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.logout),
@@ -246,7 +248,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   }
 
   void logout() async {
-    _dioClient.logoutUser();
+    //_dioClient.logoutUser();
     // implement signout here. Clear the secure storage and call logout api
     const storage = FlutterSecureStorage();
     await storage.deleteAll().whenComplete(() {

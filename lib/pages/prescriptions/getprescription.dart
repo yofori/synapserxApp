@@ -161,7 +161,7 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                             child: ElevatedButton.icon(
                                 key: null,
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.red,
+                                  backgroundColor: Colors.red,
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);

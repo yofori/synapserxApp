@@ -80,6 +80,14 @@ class _PatientsPageState extends State<PatientsPage> {
               child: FutureBuilder(
                 builder: (context, AsyncSnapshot<List<Associations>> snapshot) {
                   if (snapshot.hasData) {
+                    if (snapshot.data!.isEmpty) {
+                      return const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                            'You dont have any patients in your list.\nClick the add button to add patients',
+                            textAlign: TextAlign.center),
+                      );
+                    }
                     return ListView.separated(
                       padding: const EdgeInsets.all(8),
                       itemCount: snapshot.data!.length,

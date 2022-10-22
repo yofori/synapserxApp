@@ -271,7 +271,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                             Column(
                               children: [
                                 IconButton(
-                                    icon: const Icon(Icons.copy),
+                                    icon: const Icon(Icons.refresh),
                                     tooltip: 'Refill Prescription',
                                     onPressed: () {}),
                                 const Text(

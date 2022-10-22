@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/main.dart';
-import 'package:synapserx_prescriber/common/auth.dart';
 
 class Tokens extends Interceptor {
-  final DioClient _dioClient = DioClient();
   static const storage = FlutterSecureStorage();
   BuildContext context = navigatorKey.currentContext!;
   TextEditingController textFieldController = TextEditingController();
@@ -65,10 +63,6 @@ class Tokens extends Interceptor {
         ),
       ));
     }
-    // if ((err.response?.statusCode == 404)) {
-    //   log('Error Trapped');
-    //   return handler.next(err);
-    // }
     return handler.next(err);
   }
 
@@ -153,8 +147,8 @@ class Tokens extends Interceptor {
         actions: <Widget>[
           ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  onPrimary: Colors.red,
+                  foregroundColor: Colors.red,
+                  backgroundColor: Colors.white,
                   side: const BorderSide(
                     width: 1.5,
                     color: Colors.red,
@@ -165,7 +159,7 @@ class Tokens extends Interceptor {
               }),
           ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.green,
+                backgroundColor: Colors.green,
               ),
               onPressed: () {
                 if (formKey.currentState!.validate()) {

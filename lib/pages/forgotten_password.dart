@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
 
@@ -72,32 +75,22 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
               ),
               ElevatedButton(
-                child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                    child: Text(
-                      "Reset Password".toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    await _dioClient
-                        .resetPasswordRequest(emailController.text)
-                        .whenComplete(() {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Password reset instructions have been emailed to the email provided'),
+                  child: Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                      child: Text(
+                        "Reset Password".toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      );
-                      Navigator.pushReplacementNamed(context, '/');
-                    });
-                  }
-                },
-              ),
+                      )),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await _dioClient
+                          .resetPasswordRequest(emailController.text);
+                    }
+                  }),
             ],
           ),
         ),
