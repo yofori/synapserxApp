@@ -225,7 +225,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                               child: const Text('Cancel')),
                                           ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                primary: Colors.green,
+                                                backgroundColor: Colors.green,
                                               ),
                                               onPressed: () async {
                                                 String prescriptionID = snapshot

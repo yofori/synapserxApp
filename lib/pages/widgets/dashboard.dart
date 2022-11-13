@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/pages/changepassword.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
@@ -15,7 +14,6 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
-  final DioClient _dioClient = DioClient();
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {

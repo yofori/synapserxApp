@@ -3,6 +3,7 @@ import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/pages/patients/addassociations.dart';
+import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
 import '../patients/patientprescriptions.dart';
 
@@ -20,7 +21,7 @@ class _PatientsPageState extends State<PatientsPage> {
   static String accessToken = GlobalData.accessToken;
   final DioClient _dioClient = DioClient();
   final TextEditingController _textController = TextEditingController();
-
+  bool _searchBoolean = false;
   late Future<List<Associations>> associations;
   String searchString = "";
 
@@ -42,25 +43,65 @@ class _PatientsPageState extends State<PatientsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const RxDrawer(),
       appBar: AppBar(
-          title: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: TextField(
-            controller: _textController,
-            onChanged: (value) {
-              setState(() {
-                searchString = value.toLowerCase();
-              });
-            },
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: "Enter patient's name",
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-            )),
-      )),
+          title: !_searchBoolean
+              ? const Text('SynapseRx')
+              : TextField(
+                  autofocus:
+                      true, //Display the keyboard when TextField is displayed
+                  cursorColor: Colors.black,
+                  style: const TextStyle(
+                    //color: Colors.white,
+                    fontSize: 16,
+                  ),
+                  textInputAction: TextInputAction.search,
+                  controller: _textController,
+                  onChanged: (value) {
+                    setState(() {
+                      searchString = value.toLowerCase();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.all(12.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(
+                          width: 1.0,
+                          color: Colors.white,
+                          style: BorderStyle.none), // BorderSide
+                    ),
+                    hintText: "Enter patient's name to search",
+                    hintStyle: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )),
+          actions: !_searchBoolean
+              ? [
+                  IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          _searchBoolean = true;
+                        });
+                      })
+                ]
+              : [
+                  IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          _searchBoolean = false;
+                          _textController.clear();
+                          searchString = '';
+                        });
+                      })
+                ]),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Patient',
         child: const Icon(Icons.person_add),
@@ -88,7 +129,7 @@ class _PatientsPageState extends State<PatientsPage> {
                             textAlign: TextAlign.center),
                       );
                     }
-                    return ListView.separated(
+                    return ListView.builder(
                       padding: const EdgeInsets.all(8),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -137,12 +178,12 @@ class _PatientsPageState extends State<PatientsPage> {
                               )
                             : Container();
                       },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider(
-                          height: 2,
-                          color: Colors.grey,
-                        );
-                      },
+                      // separatorBuilder: (BuildContext context, int index) {
+                      //   return const Divider(
+                      //     height: 1,
+                      //     color: Colors.grey,
+                      //   );
+                      // },
                     );
                   } else if (snapshot.hasError) {
                     return const Center(child: Text('Something went wrong :('));

@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/common/service.dart';

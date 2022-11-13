@@ -424,7 +424,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          backgroundColor: Colors.red,
                           fixedSize: const Size(double.maxFinite, 40),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
