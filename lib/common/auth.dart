@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/main.dart';
@@ -12,27 +13,44 @@ class DioClient {
       : _dio = Dio(
           BaseOptions(
             baseUrl: GlobalData.baseUrl,
-            connectTimeout: 5000,
-            receiveTimeout: 3000,
+            connectTimeout: 9000,
+            receiveTimeout: 6000,
           ),
         );
 
   final Dio _dio;
 
-  Future loginUser(String username, String password) async {
+  Future<bool> loginUser(String username, String password) async {
     try {
       Response response = await _dio.post(
         '/user/login',
         data: {'username': username, 'password': password},
       );
-      return response;
+      if (response.statusCode == 201) {
+        saveUserData(response, password);
+        return true;
+      }
     } on DioError catch (err) {
       if (err.type == DioErrorType.connectTimeout) {
-        log(err.message);
+        const storage = FlutterSecureStorage();
+        final String? storedusername = await storage.read(key: 'username');
+        final String? storedpassword = await storage.read(key: 'password');
+        //implement offline authentication with save username and password here
+        if ((username == storedusername) & (password == storedpassword)) {
+          GlobalData.fullname = (await storage.read(key: 'fullname'))!;
+          GlobalData.surname = (await storage.read(key: 'surname'))!;
+          GlobalData.mdcregno = (await storage.read(key: 'mdcregno'))!;
+          GlobalData.firstname = (await storage.read(key: 'firstname'))!;
+          GlobalData.prescriberid = (await storage.read(key: 'prescriberid'))!;
+          return true;
+        }
+        return false;
       } else {
-        return err.response;
+        log('authentication failed for local storage');
+        return false;
       }
     }
+    return false;
   }
 
   Future<dynamic> logoutUser() async {
@@ -89,5 +107,35 @@ class DioClient {
       return false;
     }
     return false;
+  }
+
+  saveUserData(Response res, String password) async {
+    String accessToken = res.data['token'];
+    String refreshToken = res.data['refreshtoken'];
+    String username = res.data['username'];
+    GlobalData.accessToken = accessToken;
+    GlobalData.refreshToken = refreshToken;
+    GlobalData.username = username;
+    GlobalData.password = password;
+    String fullname = res.data['firstname'] + ' ' + res.data['surname'];
+    String firstname = res.data['firstname'];
+    String surname = res.data['surname'];
+    String mdcregno = res.data['mdcregno'];
+    String prescriberid = res.data['id'];
+    GlobalData.fullname = fullname;
+    GlobalData.surname = surname;
+    GlobalData.mdcregno = mdcregno;
+    GlobalData.firstname = firstname;
+    GlobalData.prescriberid = prescriberid;
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "token", value: accessToken);
+    await storage.write(key: "refreshtoken", value: refreshToken);
+    await storage.write(key: "fullname", value: fullname);
+    await storage.write(key: "mdcregno", value: mdcregno);
+    await storage.write(key: "username", value: username);
+    await storage.write(key: "password", value: password);
+    await storage.write(key: "firstname", value: firstname);
+    await storage.write(key: "surname", value: surname);
+    await storage.write(key: "prescriberid", value: prescriberid);
   }
 }

@@ -1,9 +1,8 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/common/service.dart';
+import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/pages/changepassword.dart';
-import 'package:synapserx_prescriber/pages/login.dart';
 
 class RxDrawer extends StatelessWidget {
   const RxDrawer({super.key});
@@ -93,19 +92,6 @@ class RxDrawer extends StatelessWidget {
   }
 
   void logout() async {
-    //_dioClient.logoutUser();
-    // implement signout here. Clear the secure storage and call logout api
-    // const storage = FlutterSecureStorage();
-    // await storage.deleteAll().whenComplete(() {
-    //   Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (context) => const LoginPage()));
-    // });
-    // // ignore: use_build_context_synchronously
-    // ScaffoldMessenger.of(context)
-    //   ..removeCurrentSnackBar()
-    //   ..showSnackBar(const SnackBar(
-    //     content: Text('Logged out Successfully'),
-    //     backgroundColor: Colors.green,
-    //   ));
+    Navigator.pushReplacementNamed(navigatorKey.currentContext!, '/');
   }
 }

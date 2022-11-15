@@ -6,6 +6,7 @@ import 'package:synapserx_prescriber/pages/register.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/pages/forgotten_password.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:synapserx_prescriber/pages/widgets/loadingindicator.dart';
 import 'homepage.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 
@@ -26,48 +27,17 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('logging in......'),
-          backgroundColor: Color.fromARGB(255, 72, 160, 231),
-          duration: Duration(seconds: 2)));
-
-      Response res = await _dioClient.loginUser(
+      LoadingIndicatorDialog().show(context, 'Signing in ......');
+      bool res = await _dioClient.loginUser(
         nameController.text.trim(),
         passwordController.text,
       );
+      LoadingIndicatorDialog().dismiss();
 
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      if (res.statusCode == 201) {
-        String accessToken = res.data['token'];
-        String refreshToken = res.data['refreshtoken'];
-        String username = res.data['username'];
-        GlobalData.accessToken = accessToken;
-        GlobalData.refreshToken = refreshToken;
-        GlobalData.username = username;
-        GlobalData.password = passwordController.text;
-        String fullname = res.data['firstname'] + ' ' + res.data['surname'];
-        String firstname = res.data['firstname'];
-        String surname = res.data['surname'];
-        String mdcregno = res.data['mdcregno'];
-        String prescriberid = res.data['id'];
-        GlobalData.fullname = fullname;
-        GlobalData.surname = surname;
-        GlobalData.mdcregno = mdcregno;
-        GlobalData.firstname = firstname;
-        GlobalData.prescriberid = prescriberid;
-        const storage = FlutterSecureStorage();
-        await storage.write(key: "token", value: accessToken);
-        await storage.write(key: "refreshtoken", value: refreshToken);
-        await storage.write(key: "fullname", value: fullname);
-        await storage.write(key: "mdcregno", value: mdcregno);
-        await storage.write(key: "username", value: username);
-        await storage.write(key: "password", value: passwordController.text);
-        await storage.write(key: "firstname", value: firstname);
-        await storage.write(key: "surname", value: surname);
-        await storage.write(key: "prescriberid", value: prescriberid);
-        // ignore: use_build_context_synchronously
+      if (res == true) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -78,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         // ignore: use_build_context_synchronously
         log('Error Logging in');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: ${res.data['message']}'),
+          content: const Text('Error: Login unsuccessful'),
           backgroundColor: Colors.red.shade300,
         ));
       }

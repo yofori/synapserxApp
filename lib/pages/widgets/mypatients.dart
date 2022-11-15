@@ -52,7 +52,6 @@ class _PatientsPageState extends State<PatientsPage> {
                       true, //Display the keyboard when TextField is displayed
                   cursorColor: Colors.black,
                   style: const TextStyle(
-                    //color: Colors.white,
                     fontSize: 16,
                   ),
                   textInputAction: TextInputAction.search,

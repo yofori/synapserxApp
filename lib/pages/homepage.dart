@@ -79,11 +79,4 @@ class _HomePageState extends State<HomePage> {
     );
     return exitResult ?? false;
   }
-
-  // Future<bool?> _showExitDialog(BuildContext context) async {
-  //   return await showDialog(
-  //     context: context,
-  //     builder: (context) => _buildExitDialog(context),
-  //   );
-  // }
 }
