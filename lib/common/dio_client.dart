@@ -119,12 +119,28 @@ class DioClient {
   }
 
   Future<dynamic> createPrescription(
-      {required String patientID, required List medicines}) async {
+      {required String patientID,
+      required List medicines,
+      required String pxSurname,
+      required String pxFirstname,
+      required int pxAge,
+      required String pxDOB,
+      required bool isRegistered,
+      required String pxGender}) async {
     try {
       //_dio.options.headers['Authorization'] = GlobalData.accessToken;
       Response response = await _dio.post(
         '/prescription/create',
-        data: {'patientID': patientID, 'medications': medicines},
+        data: {
+          'patientID': patientID,
+          'medications': medicines,
+          'pxSurname': pxSurname,
+          'pxFirstname': pxFirstname,
+          'pxAge': pxAge,
+          'pxDOB': pxDOB,
+          'pxgender': pxGender,
+          'isPxRegistered': isRegistered
+        },
       );
       if (response.statusCode == 201) {
         return response.data;

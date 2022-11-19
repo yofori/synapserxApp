@@ -20,7 +20,7 @@ class DioClient {
 
   final Dio _dio;
 
-  Future<bool> loginUser(String username, String password) async {
+  Future<int> loginUser(String username, String password) async {
     try {
       Response response = await _dio.post(
         '/user/login',
@@ -28,7 +28,7 @@ class DioClient {
       );
       if (response.statusCode == 201) {
         saveUserData(response, password);
-        return true;
+        return 1;
       }
     } on DioError catch (err) {
       if (err.type == DioErrorType.connectTimeout) {
@@ -42,15 +42,15 @@ class DioClient {
           GlobalData.mdcregno = (await storage.read(key: 'mdcregno'))!;
           GlobalData.firstname = (await storage.read(key: 'firstname'))!;
           GlobalData.prescriberid = (await storage.read(key: 'prescriberid'))!;
-          return true;
+          GlobalData.accessToken = (await storage.read(key: 'token'))!;
+          return 2; //authentication sucessful via local storage
         }
-        return false;
+        return 0;
       } else {
-        log('authentication failed for local storage');
-        return false;
+        return 3; //authentication via local storage fails
       }
     }
-    return false;
+    return 0; // authentication failed
   }
 
   Future<dynamic> logoutUser() async {

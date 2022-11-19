@@ -4,6 +4,7 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/pages/changepassword.dart';
 import 'package:synapserx_prescriber/pages/login.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/createadhocpatient.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
@@ -98,71 +99,118 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                         })
                   ],
                 )),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.center,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      'What would you like to do?',
-                      textAlign: TextAlign.left,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 10, 20, 2.5),
-                      padding: const EdgeInsets.all(8),
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.newspaper,
-                          size: 48,
+            Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'What would you like to do?',
+                    //textAlign: TextAlign.left,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            InkWell(
+                              splashColor: const Color(0xFF3B4257),
+                              //onTap: widget.onSelect,
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CreateAdhocPxPage()));
+                              },
+                              child: Card(
+                                  child: Container(
+                                height: 80,
+                                width: 80,
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.all(5.0),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.create_new_folder_sharp),
+                                      Text(
+                                        'Create\nPrescription',
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ]),
+                              )),
+                            ),
+                            InkWell(
+                              splashColor: const Color(0xFF3B4257),
+                              //onTap: widget.onSelect,
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const GetPrescriptionPage()));
+                              },
+                              child: Card(
+                                  child: Container(
+                                height: 80,
+                                width: 80,
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.all(5.0),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.qr_code),
+                                      Text(
+                                        'Retrieve\nPrescription',
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ]),
+                              )),
+                            ),
+                            InkWell(
+                              splashColor: const Color(0xFF3B4257),
+                              //onTap: widget.onSelect,
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CreateAdhocPxPage()));
+                              },
+                              child: Card(
+                                  child: Container(
+                                height: 80,
+                                width: 80,
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.all(5.0),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.ac_unit),
+                                      Text(
+                                        'Request\nlabs',
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ]),
+                              )),
+                            ),
+                          ],
                         ),
-                        label: const Text('Create A New Prescription'),
-                      ),
+                      ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
-                      padding: const EdgeInsets.all(8),
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const GetPrescriptionPage()));
-                        },
-                        icon: const Icon(
-                          Icons.download,
-                          size: 48,
-                        ),
-                        label: const Text('Get an Existing Prescription'),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 2.5, 20, 2.5),
-                      padding: const EdgeInsets.all(8),
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.edit_notifications,
-                          size: 48,
-                        ),
-                        label: const Text('Modify a Prescription'),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ]),
-            ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ]),
           ]),
         ));
   }

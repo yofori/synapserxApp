@@ -1,14 +1,10 @@
-import 'dart:developer';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/pages/register.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
 import 'package:synapserx_prescriber/pages/forgotten_password.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/pages/widgets/loadingindicator.dart';
 import 'homepage.dart';
-import 'package:synapserx_prescriber/common/service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> login() async {
     if (_formKey.currentState!.validate()) {
       LoadingIndicatorDialog().show(context, 'Signing in ......');
-      bool res = await _dioClient.loginUser(
+      int res = await _dioClient.loginUser(
         nameController.text.trim(),
         passwordController.text,
       );
@@ -37,17 +33,22 @@ class _LoginPageState extends State<LoginPage> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      if (res == true) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const HomePage()));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      if (res == 1) {
+        Navigator.pushReplacement(navigatorKey.currentContext!,
+            MaterialPageRoute(builder: (context) => const HomePage()));
+        scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
           content: const Text('login successful'),
           backgroundColor: Colors.green.shade300,
         ));
+      } else if (res == 2) {
+        Navigator.pushReplacement(navigatorKey.currentContext!,
+            MaterialPageRoute(builder: (context) => const HomePage()));
+        scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
+          content: Text('Server is unreachable. Offline authentication done'),
+          backgroundColor: Color.fromARGB(255, 218, 152, 67),
+        ));
       } else {
-        // ignore: use_build_context_synchronously
-        log('Error Logging in');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
           content: const Text('Error: Login unsuccessful'),
           backgroundColor: Colors.red.shade300,
         ));

@@ -53,6 +53,10 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                           patientName: widget.patientName.toString(),
                           pxAge: pxAge.toString(),
                           pxGender: pxGender,
+                          pxDOB: '',
+                          isRegistered: true,
+                          pxFirstname: '',
+                          pxSurname: '',
                         )));
             setState(() {});
           },
@@ -193,6 +197,10 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                                                       .toString(),
                                                   pxGender: snapshot
                                                       .data![index].pxgender,
+                                                  isRegistered: true,
+                                                  pxDOB: '',
+                                                  pxFirstname: '',
+                                                  pxSurname: '',
                                                 )));
                                     setState(() {});
                                   }),

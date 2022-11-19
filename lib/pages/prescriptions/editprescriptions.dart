@@ -15,15 +15,23 @@ class EditPrescriptionPage extends StatefulWidget {
       required this.pxGender,
       required this.pxAge,
       required this.prescriptionID,
-      required this.isEditting})
+      required this.isEditting,
+      required this.pxDOB,
+      required this.pxFirstname,
+      required this.pxSurname,
+      required this.isRegistered})
       : super(key: key);
   final String prescriptionID;
   final String patientID;
   final bool isEditting;
+  final bool isRegistered;
   final String title;
   final String patientName;
   final String pxGender;
   final String pxAge;
+  final String pxDOB;
+  final String pxFirstname;
+  final String pxSurname;
 
   @override
   State<EditPrescriptionPage> createState() => _EditPrescriptionPageState();
@@ -304,7 +312,15 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     })).toList();
     List medicines = prescribedMedicinesMap.toList();
     dynamic prescription = await _dioClient.createPrescription(
-        patientID: widget.patientID, medicines: medicines);
+      patientID: widget.patientID,
+      medicines: medicines,
+      pxSurname: widget.pxSurname,
+      pxAge: int.parse(widget.pxAge),
+      pxDOB: widget.pxDOB,
+      pxFirstname: widget.pxFirstname,
+      pxGender: widget.pxGender.toLowerCase(),
+      isRegistered: widget.isRegistered,
+    );
     if (prescription != null) {
       scaffoldMessengerKey.currentState!
           .showSnackBar(const SnackBar(
@@ -315,8 +331,21 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
             ),
           ))
           .closed
-          .then((_) => {Navigator.pop(navigatorKey.currentContext!)});
-    } else {}
+          .then((_) => {
+                if (widget.isRegistered)
+                  {Navigator.pop(navigatorKey.currentContext!)}
+                else
+                  {Navigator.pushNamed(context, '/home')}
+              });
+    } else {
+      scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.red,
+        content: Text(
+          "Error creating subscription",
+        ),
+      ));
+    }
   }
 
   getPrescription() async {

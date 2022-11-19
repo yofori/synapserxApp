@@ -1,5 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/pages/changepassword.dart';
@@ -62,7 +63,7 @@ class RxDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Sign Out'),
-            onTap: () async {
+            onTap: () {
               logout();
             },
           ),
@@ -91,7 +92,27 @@ class RxDrawer extends StatelessWidget {
     );
   }
 
-  void logout() async {
-    Navigator.pushReplacementNamed(navigatorKey.currentContext!, '/');
+  void logout() {
+    showDialog(
+        context: navigatorKey.currentContext!,
+        builder: (ctx) => AlertDialog(
+              title: const Text('Please confirm'),
+              content: const Text('Do you want to exit the app?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    SystemNavigator.pop().whenComplete(() =>
+                        Navigator.pushReplacementNamed(
+                            navigatorKey.currentContext!,
+                            '/')); // will be ignored in iOS to login screen will instead show
+                  },
+                  child: const Text('Yes'),
+                ),
+              ],
+            ));
   }
 }
