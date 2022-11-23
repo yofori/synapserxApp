@@ -13,8 +13,8 @@ class DioClient {
       : _dio = Dio(
           BaseOptions(
             baseUrl: GlobalData.baseUrl,
-            connectTimeout: 9000,
-            receiveTimeout: 6000,
+            connectTimeout: 5000,
+            receiveTimeout: 3000,
           ),
         );
 
@@ -22,12 +22,13 @@ class DioClient {
 
   Future<int> loginUser(String username, String password) async {
     try {
+      log('Attempting login........');
       Response response = await _dio.post(
         '/user/login',
         data: {'username': username, 'password': password},
       );
       if (response.statusCode == 201) {
-        saveUserData(response, password);
+        await saveUserData(response, password);
         return 1;
       }
     } on DioError catch (err) {
@@ -47,6 +48,7 @@ class DioClient {
         }
         return 0;
       } else {
+        log(err.message);
         return 3; //authentication via local storage fails
       }
     }
@@ -77,7 +79,7 @@ class DioClient {
         scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
           backgroundColor: Colors.green,
           content: Text(
-            "Password reset instructions have been emailed to the email provided'",
+            "Password reset instructions have been emailed to the email provided",
           ),
         ));
         Navigator.pushReplacementNamed(navigatorKey.currentContext!, '/');

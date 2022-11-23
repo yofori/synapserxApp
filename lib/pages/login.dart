@@ -30,8 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       LoadingIndicatorDialog().dismiss();
 
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
 
       if (res == 1) {
         Navigator.pushReplacement(navigatorKey.currentContext!,
@@ -49,7 +48,8 @@ class _LoginPageState extends State<LoginPage> {
         ));
       } else {
         scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
-          content: const Text('Error: Login unsuccessful'),
+          content: const Text(
+              'Error: Login unsuccessful, check user name and password'),
           backgroundColor: Colors.red.shade300,
         ));
       }

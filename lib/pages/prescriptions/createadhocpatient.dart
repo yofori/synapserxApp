@@ -155,15 +155,15 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                   Row(
                     children: [
                       const SizedBox(
-                        width: 15,
+                        width: 20,
                       ),
-                      const Text('Date of Birth:'),
+                      const Text('Date of birth:'),
                       const SizedBox(
                         width: 5,
                       ),
                       SizedBox(
-                        width: 130,
-                        height: 36,
+                        width: 160,
+                        //height: 36,
                         child: TextFormField(
                             onChanged: ((value) {}),
                             validator: (val) {
@@ -175,35 +175,34 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                             controller: pxDOBController,
                             keyboardType: TextInputType.datetime,
                             enabled: !ageIsEstimated,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(8),
+                              suffixIcon: GestureDetector(
+                                onTap: ageIsEstimated
+                                    ? null
+                                    : () async {
+                                        DateTime? pickedDate =
+                                            await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime
+                                                    .now(), //get today's date
+                                                firstDate: DateTime(
+                                                    1910), //DateTime.now() - not to allow to choose before today.
+                                                lastDate: DateTime.now());
+                                        pxDOBController.text =
+                                            DateFormat("yyyy-MM-dd")
+                                                .format(pickedDate!);
+                                        pxAgeController.text =
+                                            (DateTime.now().year -
+                                                    pickedDate.year)
+                                                .toString();
+                                      },
+                                child: const Icon(Icons.calendar_month),
+                              ),
                               isDense: true,
-                              contentPadding: EdgeInsets.all(10.0),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                             )),
                       ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      ElevatedButton.icon(
-                          onPressed: ageIsEstimated
-                              ? null
-                              : () async {
-                                  DateTime? pickedDate = await showDatePicker(
-                                      context: context,
-                                      initialDate:
-                                          DateTime.now(), //get today's date
-                                      firstDate: DateTime(
-                                          1910), //DateTime.now() - not to allow to choose before today.
-                                      lastDate: DateTime.now());
-                                  pxDOBController.text =
-                                      DateFormat("yyyy-MM-dd")
-                                          .format(pickedDate!);
-                                  pxAgeController.text =
-                                      (DateTime.now().year - pickedDate.year)
-                                          .toString();
-                                },
-                          icon: const Icon(Icons.calendar_month),
-                          label: const Text('Select'))
                     ],
                   ),
                   const SizedBox(

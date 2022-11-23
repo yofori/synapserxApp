@@ -118,6 +118,20 @@ class DioClient {
     }
   }
 
+  Future<List<Prescription>> getPrescriberRx(String prescriberid) async {
+    try {
+      //_dio.options.headers['Authorization'] = GlobalData.accessToken;
+      Response response = await _dio.get(
+          '/prescription/getprescriberprescriptions?prescriberid=$prescriberid');
+      return (response.data as List)
+          .map((x) => Prescription.fromJson(x))
+          .toList();
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    }
+  }
+
   Future<dynamic> createPrescription(
       {required String patientID,
       required List medicines,
@@ -168,7 +182,6 @@ class DioClient {
   Future<dynamic> updatePrescription(
       {required String prescriptionID, required List medicines}) async {
     try {
-      //_dio.options.headers['Authorization'] = GlobalData.accessToken;
       Response response = await _dio.put(
         '/prescription/update/$prescriptionID',
         data: {'medications': medicines},

@@ -1,11 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:barcode_widget/barcode_widget.dart';
-import 'package:synapserx_prescriber/common/service.dart';
-import 'package:synapserx_prescriber/pages/changepassword.dart';
-import 'package:synapserx_prescriber/pages/login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/createadhocpatient.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
+import 'package:synapserx_prescriber/pages/widgets/rxcustombutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
 class HomeDashboardPage extends StatefulWidget {
@@ -49,7 +49,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
         body: SingleChildScrollView(
           child: Column(children: [
             const SizedBox(
-              height: 15,
+              height: 5,
             ),
             Container(
                 margin: const EdgeInsets.all(20),
@@ -83,7 +83,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                             return Text('${snapshot.error}');
                           }
                           if (snapshot.hasData) return Text('${snapshot.data}');
-                          return const CircularProgressIndicator();
+                          return const Text('');
                         }),
                     const SizedBox(
                       height: 3,
@@ -95,7 +95,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                             return Text('${snapshot.error}');
                           }
                           if (snapshot.hasData) return Text('${snapshot.data}');
-                          return const CircularProgressIndicator();
+                          return const Text('');
                         })
                   ],
                 )),
@@ -109,126 +109,55 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     //textAlign: TextAlign.left,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            InkWell(
-                              splashColor: const Color(0xFF3B4257),
-                              //onTap: widget.onSelect,
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CreateAdhocPxPage()));
-                              },
-                              child: Card(
-                                  child: Container(
-                                height: 80,
-                                width: 80,
-                                alignment: Alignment.center,
-                                margin: const EdgeInsets.all(5.0),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.create_new_folder_sharp),
-                                      Text(
-                                        'Create\nPrescription',
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ]),
-                              )),
-                            ),
-                            InkWell(
-                              splashColor: const Color(0xFF3B4257),
-                              //onTap: widget.onSelect,
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const GetPrescriptionPage()));
-                              },
-                              child: Card(
-                                  child: Container(
-                                height: 80,
-                                width: 80,
-                                alignment: Alignment.center,
-                                margin: const EdgeInsets.all(5.0),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.qr_code),
-                                      Text(
-                                        'Retrieve\nPrescription',
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ]),
-                              )),
-                            ),
-                            InkWell(
-                              splashColor: const Color(0xFF3B4257),
-                              //onTap: widget.onSelect,
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CreateAdhocPxPage()));
-                              },
-                              child: Card(
-                                  child: Container(
-                                height: 80,
-                                width: 80,
-                                alignment: Alignment.center,
-                                margin: const EdgeInsets.all(5.0),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.ac_unit),
-                                      Text(
-                                        'Request\nlabs',
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ]),
-                              )),
-                            ),
+                            RxButton(
+                                icon: FontAwesomeIcons.filePrescription,
+                                title: 'New\nPrescription',
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const CreateAdhocPxPage()));
+                                }),
+                            RxButton(
+                                icon: MdiIcons.qrcodeScan,
+                                title: 'Retrieve\nPrescription',
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const GetPrescriptionPage()));
+                                }),
+                            RxButton(
+                                icon: CupertinoIcons.lab_flask,
+                                title: 'Request\nlabs',
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const GetPrescriptionPage()));
+                                }),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ExpansionTile(
+                        title: Text('Recent Activity'),
+                        backgroundColor: Color.fromARGB(255, 108, 139, 194)),
                   ),
                 ]),
           ]),
         ));
-  }
-
-  void logout() async {
-    //_dioClient.logoutUser();
-    // implement signout here. Clear the secure storage and call logout api
-    // const storage = FlutterSecureStorage();
-    // await storage.deleteAll().whenComplete(() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LoginPage()));
-    // });
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(const SnackBar(
-        content: Text('Logged out Successfully'),
-        backgroundColor: Colors.green,
-      ));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -105,10 +107,13 @@ class RxDrawer extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    SystemNavigator.pop().whenComplete(() =>
-                        Navigator.pushReplacementNamed(
-                            navigatorKey.currentContext!,
-                            '/')); // will be ignored in iOS to login screen will instead show
+                    Platform
+                            .isIOS //iOS will not allow for programatically exit the app so go to login page
+                        ? {
+                            Navigator.pushReplacementNamed(
+                                navigatorKey.currentContext!, '/')
+                          }
+                        : SystemNavigator.pop();
                   },
                   child: const Text('Yes'),
                 ),

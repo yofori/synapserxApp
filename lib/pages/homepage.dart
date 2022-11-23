@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
 import 'package:synapserx_prescriber/pages/widgets/mypatients.dart';
 import 'package:synapserx_prescriber/pages/widgets/medicinespage.dart';
@@ -77,6 +80,13 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) => _buildExitDialog(context),
     );
-    return exitResult ?? false;
+    if (exitResult!) {
+      Platform.isIOS //iOS will not allow for programatically exit the app so go to login page
+          ? {true}
+          : SystemNavigator.pop();
+      return true;
+    } else {
+      return false;
+    }
   }
 }
