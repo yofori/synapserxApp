@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
               label: 'My Patients',
             ),
             BottomNavigationBarItem(
-              icon: Icon(IcoFontIcons.prescription),
+              icon: Icon(IcoFontIcons.prescription, size: 20),
               label: 'My Orders',
             ),
             BottomNavigationBarItem(
