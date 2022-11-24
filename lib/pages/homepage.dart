@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
+import 'package:synapserx_prescriber/pages/widgets/myorders.dart';
 import 'package:synapserx_prescriber/pages/widgets/mypatients.dart';
 import 'package:synapserx_prescriber/pages/widgets/medicinespage.dart';
+import 'package:icofont_flutter/icofont_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   final List _screens = [
     {"screen": const HomeDashboardPage()},
     {"screen": const PatientsPage(title: 'My Patients')},
+    {"screen": const PrescriptionsPage(title: 'My Prescriptions')},
     {"screen": const MyPrescriptionsPage(title: 'Medicines')},
   ];
 
@@ -44,6 +48,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
               label: 'My Patients',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(IcoFontIcons.prescription),
+              label: 'My Orders',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.medical_services),

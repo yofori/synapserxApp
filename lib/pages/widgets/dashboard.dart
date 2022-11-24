@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/common/service.dart';
+import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/createadhocpatient.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxcustombutton.dart';
@@ -16,6 +19,7 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
+  final DioClient _dioClient = DioClient();
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
@@ -150,11 +154,59 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: ExpansionTile(
-                        title: Text('Recent Activity'),
-                        backgroundColor: Color.fromARGB(255, 108, 139, 194)),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Card(
+                      child: ExpansionTile(
+                          title: const Text('Recent Activity'),
+                          children: [
+                            FutureBuilder<List<Prescription>>(
+                                future: _dioClient
+                                    .getPrescriberRx(GlobalData.prescriberid),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<List<Prescription>>
+                                        snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    // If we got an error
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(
+                                          '${snapshot.error} occured',
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                      );
+
+                                      // if we got our data
+                                    } else if (snapshot.hasData) {
+                                      // Extracting data from snapshot object
+                                      final data = snapshot.data;
+                                      return SizedBox(
+                                          height: 180,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: data!.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return ListTile(
+                                                leading: const Icon(
+                                                    FontAwesomeIcons
+                                                        .filePrescription),
+                                                title: Text(
+                                                    '${data[index].pxFirstname} ${data[index].pxSurname}'),
+                                                subtitle: Text(
+                                                    'Prescription written on ${data[index].createdAt}'),
+                                              );
+                                            },
+                                          ));
+                                    }
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                })
+                          ]),
+                    ),
                   ),
                 ]),
           ]),
