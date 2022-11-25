@@ -116,7 +116,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                       return const Align(
                         alignment: Alignment.center,
                         child: Text(
-                            'You haven\'t wrriten any prescriptions yet.\nClick the add button to add prescriptions',
+                            'You haven\'t wrriten any orders yet.\nClick the add button to add orders',
                             textAlign: TextAlign.center),
                       );
                     }
@@ -143,19 +143,13 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                    'Prescription\nWritten on ${DateFormat('dd-MM-yyyy @ hh:mm a').format(DateTime.parse(snapshot.data![index].createdAt.toString()))}'),
+                                    'Prescription written on \n${DateFormat('dd-MM-yyyy @ hh:mm a').format(DateTime.parse(snapshot.data![index].createdAt.toString()))}'),
                                 trailing: Text(
                                     textAlign: TextAlign.right,
                                     'Status:\n${snapshot.data?[index].status}'),
                               )
                             : Container();
                       },
-                      // separatorBuilder: (BuildContext context, int index) {
-                      //   return const Divider(
-                      //     height: 1,
-                      //     color: Colors.grey,
-                      //   );
-                      // },
                     );
                   } else if (snapshot.hasError) {
                     return const Center(child: Text('Something went wrong :('));

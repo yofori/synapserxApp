@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:pdf/pdf.dart';
@@ -12,8 +13,10 @@ class PdfPrescriptionApi {
     pdf.addPage(MultiPage(
       build: (context) => [
         buildHeader(prescription),
-        SizedBox(height: 3 * PdfPageFormat.cm),
+        SizedBox(height: 1 * PdfPageFormat.cm),
         buildTitle(prescription),
+        buildPatientAddress(prescription),
+        SizedBox(height: 1 * PdfPageFormat.cm),
         buildPrescription(prescription),
       ],
       footer: (context) => buildFooter(prescription),
@@ -40,23 +43,27 @@ class PdfPrescriptionApi {
               ),
             ],
           ),
-          SizedBox(height: 1 * PdfPageFormat.cm),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              buildPatientAddress(prescription),
-            ],
-          ),
         ],
       );
 
   static Widget buildPatientAddress(Prescription prescription) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Nme: ${prescription.pxFirstname} ${prescription.pxSurname}',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          Text('Age: ${prescription.pxAge} Gender: ${prescription.pxgender}'),
+          Text('Name: ${prescription.pxFirstname} ${prescription.pxSurname}',
+              style: TextStyle(
+                  fontWeight: FontWeight.normal, fontSize: 14, lineSpacing: 2)),
+          SizedBox(height: 0.125 * PdfPageFormat.cm),
+          Text(
+              'Sex / Age: ${prescription.pxAge}yrs / ${prescription.pxgender.toUpperCase()}',
+              style: TextStyle(
+                  fontWeight: FontWeight.normal, fontSize: 14, lineSpacing: 2)),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          Text(
+              'Date: ${DateFormat('dd-MM-yyyy @ hh:mm a').format(DateTime.parse(prescription.createdAt.toString()))}',
+              style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                  lineSpacing: 1.5)),
         ],
       );
 
@@ -71,11 +78,15 @@ class PdfPrescriptionApi {
       );
 
   static Widget buildTitle(Prescription prescription) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'PRESCRIPTION',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Container(
+            alignment: Alignment.center,
+            child: Text('PRESCRIPTION FORM',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
           SizedBox(height: 0.8 * PdfPageFormat.cm),
         ],
@@ -93,7 +104,7 @@ class PdfPrescriptionApi {
     final data = prescription.medications!.map((item) {
       return [
         '${(i++)}',
-        item.drugName,
+        '${item.drugName}\n${item.directionOfUse}',
         '${item.dose} ${item.dosageUnits}',
         '${item.dosageRegimen}',
         '${item.duration} ${item.durationUnits}',
@@ -123,10 +134,11 @@ class PdfPrescriptionApi {
           Divider(),
           SizedBox(height: 2 * PdfPageFormat.mm),
           buildSimpleText(
-              title: 'Name', value: prescription.prescriberName.toString()),
+              title: 'Name of Prescriber: ',
+              value: prescription.prescriberName.toString()),
           SizedBox(height: 1 * PdfPageFormat.mm),
           buildSimpleText(
-              title: 'MDC Reg No',
+              title: 'MDC Reg No: ',
               value: prescription.prescriberMDCRegNo.toString()),
         ],
       );
