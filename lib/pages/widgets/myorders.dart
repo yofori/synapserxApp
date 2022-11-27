@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/models/models.dart';
-import 'package:synapserx_prescriber/pages/patients/addassociations.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
+import 'package:synapserx_prescriber/pages/widgets/prescriptionactionbar.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
-
-import '../patients/patientprescriptions.dart';
+import 'package:synapserx_prescriber/common/pdf_prescription_api.dart'
+    as pdfgen;
 
 // ignore: must_be_immutable
 class PrescriptionsPage extends StatefulWidget {
@@ -25,6 +27,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
   bool _searchBoolean = false;
   late Future<List<Prescription>> prescriptions;
   String searchString = "";
+  int selected = -1; //attention
 
   @override
   void initState() {
@@ -93,13 +96,6 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                         });
                       })
                 ]),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Patient',
-        child: const Icon(Icons.person_add),
-        onPressed: () {
-          navigateToAddAssociation();
-        },
-      ),
       body: RefreshIndicator(
         onRefresh: () async {
           _refresh();
@@ -121,16 +117,29 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                       );
                     }
                     return ListView.builder(
+                      key: Key('builder ${selected.toString()}'),
                       padding: const EdgeInsets.all(8),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
                         return ('${snapshot.data![index].pxSurname} ${snapshot.data![index].pxSurname}')
                                 .toLowerCase()
                                 .contains(searchString)
-                            ? ListTile(
+                            ? ExpansionTile(
+                                initiallyExpanded: index == selected,
+                                onExpansionChanged: (newState) {
+                                  if (newState) {
+                                    setState(() {
+                                      selected = index;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      selected = -1;
+                                    });
+                                  }
+                                },
                                 leading: const Icon(
                                     FontAwesomeIcons.prescriptionBottle),
-                                onTap: () {},
+                                //onTap: () {},
                                 title: Container(
                                   decoration: const BoxDecoration(
                                       //border: Border(
@@ -147,7 +156,16 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                                 trailing: Text(
                                     textAlign: TextAlign.right,
                                     'Status:\n${snapshot.data?[index].status}'),
-                              )
+                                children: [
+                                    //_Product_ExpandAble_List_Builder(index),
+                                    medicationsList(
+                                        snapshot.data![index].medications!),
+                                    //prescriptionactionbar(snapshot.data![index])
+                                    PrescriptionActionBar(
+                                      prescription: snapshot.data![index],
+                                      notifyParent: _refresh,
+                                    )
+                                  ])
                             : Container();
                       },
                     );
@@ -174,22 +192,28 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
     return response;
   }
 
-  void navigateToAddAssociation() async {
-    Navigator.of(context)
-        .push(MaterialPageRoute(
-            builder: (context) => const AddAssociationsPage()))
-        .whenComplete(() {
-      setState(() {
-        prescriptions = fetchprescriptions();
-      });
-    });
-  }
-
   Future<void> _refresh() async {
     if (mounted) {
       _key = GlobalKey();
-      setState(() {});
+      setState(() {
+        prescriptions = fetchprescriptions();
+      });
     }
     Future.value(null);
+  }
+
+  medicationsList(List<Medications> medication) {
+    return ListView.builder(
+        itemCount: medication.length,
+        shrinkWrap: true,
+        itemBuilder: (context, i) => ListTile(
+            leading: CircleAvatar(
+              child: Text((i + 1).toString()),
+            ),
+            title: Text(medication[i].drugName!.toUpperCase()),
+            subtitle: Text('${medication[i].dose} '
+                '${medication[i].dosageUnits} '
+                '${medication[i].dosageRegimen} x '
+                '${medication[i].duration} ${medication[i].durationUnits}')));
   }
 }
