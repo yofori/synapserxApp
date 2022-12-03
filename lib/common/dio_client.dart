@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
@@ -6,6 +8,7 @@ import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/tokens.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:synapserx_prescriber/models/useraccounts.dart';
 
 class DioClient {
   DioClient()
@@ -20,8 +23,6 @@ class DioClient {
   final Dio _dio;
 
   static const storage = FlutterSecureStorage();
-
-  // Fetches an user based on the given `id`.
 
   //create a new user
   Future<dynamic> createUser({required User user}) async {
@@ -86,10 +87,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> addAssociation(
-      {required String token, required String patientid}) async {
-    // _dio.options.headers['Authorization'] = token;
-    //print(patientid);
+  Future<dynamic> addAssociation({required String patientid}) async {
     try {
       Response response = await _dio.post(
         '/user/createassociation',
@@ -106,7 +104,6 @@ class DioClient {
 
   Future<List<Prescription>> getPxRx(String patientuid) async {
     try {
-      //_dio.options.headers['Authorization'] = GlobalData.accessToken;
       Response response = await _dio
           .get('/prescription/getpatientprescriptions?pxId=$patientuid');
       return (response.data as List)
@@ -120,11 +117,23 @@ class DioClient {
 
   Future<List<Prescription>> getPrescriberRx(String prescriberid) async {
     try {
-      //_dio.options.headers['Authorization'] = GlobalData.accessToken;
       Response response = await _dio.get(
           '/prescription/getprescriberprescriptions?prescriberid=$prescriberid');
       return (response.data as List)
           .map((x) => Prescription.fromJson(x))
+          .toList();
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      throw errorMessage;
+    }
+  }
+
+  Future<List<UserAccount>> getUserAccounts(String prescriberid) async {
+    try {
+      Response response =
+          await _dio.get('/user/listinstitutions/$prescriberid');
+      return (response.data as List)
+          .map((x) => UserAccount.fromJson(x))
           .toList();
     } on DioError catch (err) {
       final errorMessage = DioException.fromDioError(err).toString();
@@ -140,6 +149,8 @@ class DioClient {
       required int pxAge,
       required String pxDOB,
       required bool isRegistered,
+      String? pxEmail,
+      String? pxTelephone,
       required String pxGender}) async {
     try {
       //_dio.options.headers['Authorization'] = GlobalData.accessToken;
@@ -152,6 +163,8 @@ class DioClient {
           'pxFirstname': pxFirstname,
           'pxAge': pxAge,
           'pxDOB': pxDOB,
+          'pxEmail': pxEmail,
+          'pxTelephone': pxTelephone,
           'pxgender': pxGender,
           'isPxRegistered': isRegistered
         },
@@ -195,5 +208,20 @@ class DioClient {
       }
     }
     return null;
+  }
+
+  Future<bool> addUserAccount({required UserAccount useraccount}) async {
+    try {
+      Response response = await _dio.post(
+          '/user/addinstitution/${GlobalData.prescriberid}',
+          data: useraccount.toJson());
+      if (response.statusCode == 201) {
+        return true;
+      }
+    } on DioError catch (err) {
+      log(err.message);
+      return false;
+    }
+    return false;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:synapserx_prescriber/models/useraccounts.dart';
 
 part 'user.g.dart';
 
@@ -15,6 +16,7 @@ class User {
     required this.title,
     required this.role,
     required this.password,
+    this.useraccounts,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -31,4 +33,5 @@ class User {
   String title;
   String role;
   String password;
+  List<UserAccount>? useraccounts;
 }

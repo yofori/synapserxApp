@@ -104,8 +104,8 @@ class PdfPrescriptionApi {
     final data = prescription.medications!.map((item) {
       return [
         '${(i++)}',
-        '${item.drugName}\n${item.directionOfUse}',
-        '${item.dose} ${item.dosageUnits}',
+        '${item.drugName} ${item.directionOfUse == null || item.directionOfUse.toString().trim() == '' ? '' : '\n \n Sig: ${item.directionOfUse.toString()}'}',
+        '${item.dose}${item.dosageUnits}',
         '${item.dosageRegimen}',
         '${item.duration} ${item.durationUnits}',
       ];
@@ -117,13 +117,21 @@ class PdfPrescriptionApi {
       border: null,
       headerStyle: TextStyle(fontWeight: FontWeight.bold),
       headerDecoration: const BoxDecoration(color: PdfColors.grey300),
+      headerAlignments: {
+        0: Alignment.bottomCenter,
+        1: Alignment.bottomLeft,
+        2: Alignment.bottomLeft,
+        3: Alignment.bottomLeft,
+        4: Alignment.bottomLeft
+      },
       cellHeight: 30,
+      columnWidths: {1: const FixedColumnWidth(240)},
       cellAlignments: {
-        0: Alignment.centerLeft,
-        1: Alignment.centerLeft,
-        2: Alignment.centerLeft,
-        3: Alignment.center,
-        4: Alignment.centerLeft,
+        0: Alignment.topLeft,
+        1: Alignment.topLeft,
+        2: Alignment.topLeft,
+        3: Alignment.topCenter,
+        4: Alignment.topLeft,
       },
     );
   }

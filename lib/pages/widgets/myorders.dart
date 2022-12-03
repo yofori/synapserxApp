@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/models/models.dart';
-import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
 import 'package:synapserx_prescriber/pages/widgets/prescriptionactionbar.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
-import 'package:synapserx_prescriber/common/pdf_prescription_api.dart'
-    as pdfgen;
 
 // ignore: must_be_immutable
 class PrescriptionsPage extends StatefulWidget {

@@ -1,13 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
-import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
 import 'package:synapserx_prescriber/pages/widgets/prescriptionactionbar.dart';
-import '../../common/pdf_prescription_api.dart';
 
 class PatientPrescriptionsPage extends StatefulWidget {
   const PatientPrescriptionsPage({

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -20,7 +18,7 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
   DateTime pickedDate = DateTime.now();
   TextEditingController pxSurnameController = TextEditingController();
   TextEditingController pxFirstnameController = TextEditingController();
-  TextEditingController pxtelephoneController = TextEditingController();
+  TextEditingController pxTelephoneController = TextEditingController();
   TextEditingController pxEmailController = TextEditingController();
   TextEditingController pxDOBController = TextEditingController();
   TextEditingController pxAgeController = TextEditingController();
@@ -209,7 +207,7 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                     height: 10,
                   ),
                   TextFormField(
-                      controller: pxtelephoneController,
+                      controller: pxTelephoneController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
                         labelText: 'Telephone',
@@ -251,7 +249,6 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green),
                           onPressed: () {
-                            log(pxDOBController.text);
                             if (_formKey.currentState!.validate()) {
                               Navigator.push(
                                   context,
@@ -271,6 +268,9 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                                             pxFirstname:
                                                 pxFirstnameController.text,
                                             pxSurname: pxSurnameController.text,
+                                            pxEmail: pxEmailController.text,
+                                            pxTelephone:
+                                                pxTelephoneController.text,
                                           )));
                             }
                           },

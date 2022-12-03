@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:synapserx_prescriber/pages/widgets/dashboard.dart';
 import 'package:synapserx_prescriber/pages/widgets/myorders.dart';
 import 'package:synapserx_prescriber/pages/widgets/mypatients.dart';

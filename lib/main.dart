@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/homepage.dart';
-import 'package:synapserx_prescriber/pages/login.dart';
+import 'package:synapserx_prescriber/pages/user/login.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =

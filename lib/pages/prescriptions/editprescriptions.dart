@@ -19,6 +19,8 @@ class EditPrescriptionPage extends StatefulWidget {
       required this.pxDOB,
       required this.pxFirstname,
       required this.pxSurname,
+      this.pxEmail,
+      this.pxTelephone,
       required this.isRegistered})
       : super(key: key);
   final String prescriptionID;
@@ -32,6 +34,8 @@ class EditPrescriptionPage extends StatefulWidget {
   final String pxDOB;
   final String pxFirstname;
   final String pxSurname;
+  final String? pxEmail;
+  final String? pxTelephone;
 
   @override
   State<EditPrescriptionPage> createState() => _EditPrescriptionPageState();
@@ -312,15 +316,16 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     })).toList();
     List medicines = prescribedMedicinesMap.toList();
     dynamic prescription = await _dioClient.createPrescription(
-      patientID: widget.patientID,
-      medicines: medicines,
-      pxSurname: widget.pxSurname,
-      pxAge: int.parse(widget.pxAge),
-      pxDOB: widget.pxDOB,
-      pxFirstname: widget.pxFirstname,
-      pxGender: widget.pxGender.toLowerCase(),
-      isRegistered: widget.isRegistered,
-    );
+        patientID: widget.patientID,
+        medicines: medicines,
+        pxSurname: widget.pxSurname,
+        pxAge: int.parse(widget.pxAge),
+        pxDOB: widget.pxDOB,
+        pxFirstname: widget.pxFirstname,
+        pxGender: widget.pxGender.toLowerCase(),
+        isRegistered: widget.isRegistered,
+        pxEmail: widget.pxEmail,
+        pxTelephone: widget.pxTelephone);
     if (prescription != null) {
       scaffoldMessengerKey.currentState!
           .showSnackBar(const SnackBar(

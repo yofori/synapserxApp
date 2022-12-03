@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/main.dart';
-import 'package:synapserx_prescriber/pages/changepassword.dart';
+import 'package:synapserx_prescriber/pages/user/changepassword.dart';
+import 'package:synapserx_prescriber/pages/user/useraccounts.dart';
 
 class RxDrawer extends StatelessWidget {
   const RxDrawer({super.key});
@@ -50,6 +51,16 @@ class RxDrawer extends StatelessWidget {
             onTap: () {
               // Update the state of the app.
               // ...
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.manage_accounts),
+            title: const Text('Accounts ....'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UserAccountsPage()));
             },
           ),
           ListTile(

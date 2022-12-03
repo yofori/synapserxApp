@@ -163,8 +163,8 @@ class _AddAssociationsPageState extends State<AddAssociationsPage> {
         content: const Text('Processing Data'),
         backgroundColor: Colors.blue.shade300,
       ));
-      dynamic response = await _dioClient.addAssociation(
-          token: accessToken, patientid: _scanBarcode);
+      dynamic response =
+          await _dioClient.addAssociation(patientid: _scanBarcode);
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       if (response['ErrorCode'] == null) {

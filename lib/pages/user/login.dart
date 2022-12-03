@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/main.dart';
-import 'package:synapserx_prescriber/pages/register.dart';
+import 'package:synapserx_prescriber/pages/user/register.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
-import 'package:synapserx_prescriber/pages/forgotten_password.dart';
+import 'package:synapserx_prescriber/pages/user/forgotten_password.dart';
 import 'package:synapserx_prescriber/pages/widgets/loadingindicator.dart';
-import 'homepage.dart';
+import '../homepage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);

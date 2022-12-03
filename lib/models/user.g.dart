@@ -17,6 +17,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       title: json['title'] as String,
       role: json['role'] as String,
       password: json['password'] as String,
+      useraccounts: (json['useraccounts'] as List<dynamic>?)
+          ?.map((e) => UserAccount.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -30,4 +33,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'title': instance.title,
       'role': instance.role,
       'password': instance.password,
+      'useraccounts': instance.useraccounts,
     };

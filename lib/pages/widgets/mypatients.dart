@@ -177,12 +177,6 @@ class _PatientsPageState extends State<PatientsPage> {
                               )
                             : Container();
                       },
-                      // separatorBuilder: (BuildContext context, int index) {
-                      //   return const Divider(
-                      //     height: 1,
-                      //     color: Colors.grey,
-                      //   );
-                      // },
                     );
                   } else if (snapshot.hasError) {
                     return const Center(child: Text('Something went wrong :('));
