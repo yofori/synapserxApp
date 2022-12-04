@@ -124,7 +124,7 @@ class _PatientsPageState extends State<PatientsPage> {
                       return const Align(
                         alignment: Alignment.center,
                         child: Text(
-                            'You dont have any patients in your list.\nClick the add button to add patients',
+                            'You don\'t have any patients in your list.\nClick the add button to add patients',
                             textAlign: TextAlign.center),
                       );
                     }

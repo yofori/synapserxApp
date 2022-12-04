@@ -224,4 +224,35 @@ class DioClient {
     }
     return false;
   }
+
+  Future<bool> deleteUserAccount(String accountid) async {
+    try {
+      Response response = await _dio.post(
+        '/user/deleteinstitution/${GlobalData.prescriberid}/$accountid',
+      );
+      if (response.statusCode == 202) {
+        return true;
+      }
+    } on DioError catch (err) {
+      log(err.message);
+      return false;
+    }
+    return false;
+  }
+
+  Future<bool> updateUserAccount(String accountid,
+      {required UserAccount useraccount}) async {
+    try {
+      Response response = await _dio.post(
+          '/user/updateinstitution/${GlobalData.prescriberid}/$accountid',
+          data: useraccount.toJson());
+      if (response.statusCode == 202) {
+        return true;
+      }
+    } on DioError catch (err) {
+      log(err.message);
+      return false;
+    }
+    return false;
+  }
 }

@@ -143,11 +143,17 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                                 icon: CupertinoIcons.lab_flask,
                                 title: 'Request\nlabs',
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const GetPrescriptionPage()));
+                                  Future.delayed(
+                                    const Duration(seconds: 0),
+                                    () => showDialog(
+                                      context: context,
+                                      builder: (context) => const AlertDialog(
+                                        title: Text('Future Feature'),
+                                        content: Text(
+                                            'This feature will be available in a future release'),
+                                      ),
+                                    ),
+                                  );
                                 }),
                           ],
                         ),

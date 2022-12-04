@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/models/useraccounts.dart';
+import 'package:synapserx_prescriber/pages/widgets/loadingindicator.dart';
 
 class UserAccountsPage extends StatefulWidget {
   const UserAccountsPage({Key? key}) : super(key: key);
@@ -20,6 +19,7 @@ class UserAccountsPageState extends State<UserAccountsPage> {
   TextEditingController institutionTelephone = TextEditingController();
   TextEditingController institutionEmail = TextEditingController();
   late Future<List<UserAccount>> useraccounts;
+  bool isEditing = false;
 
   @override
   void initState() {
@@ -37,101 +37,10 @@ class UserAccountsPageState extends State<UserAccountsPage> {
           tooltip: 'Add Account',
           child: const Icon(Icons.add),
           onPressed: () {
-            showModalBottomSheet(
-                shape: const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(10.0))),
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                              padding: const EdgeInsets.all(10),
-                              child:
-                                  const Text('Enter Health Facility Details')),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                              controller: institutionName,
-                              decoration: const InputDecoration(
-                                  isDense: true,
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Health Facility Name',
-                                  hintText:
-                                      'Enter your Health Facility\'s Name here')),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                              controller: institutionAddress,
-                              decoration: const InputDecoration(
-                                  isDense: true,
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Health Facility Address',
-                                  hintText:
-                                      'Enter your Health Facility\'s Address here')),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                              controller: institutionEmail,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: const InputDecoration(
-                                  isDense: true,
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Health Facility Email',
-                                  hintText:
-                                      'Enter your Health Facility\'s Email')),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                              controller: institutionTelephone,
-                              keyboardType: TextInputType.phone,
-                              decoration: const InputDecoration(
-                                  isDense: true,
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Health Facility Telephone No',
-                                  hintText:
-                                      'Enter your Health Facility\'s Telephone No here')),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.redAccent),
-                                  onPressed: (() {
-                                    Navigator.pop(context);
-                                  }),
-                                  child: const Text('Cancel')),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green),
-                                  onPressed: (() {
-                                    addUserAcount();
-                                  }),
-                                  child: const Text('Save')),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                });
+            isEditing = false;
+            institutionName.text = institutionAddress.text =
+                institutionEmail.text = institutionTelephone.text = '';
+            displayButtomSheet(context, '');
           },
         ),
         body: FutureBuilder(
@@ -160,11 +69,66 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                               PopupMenuButton(
                                   itemBuilder: (BuildContext context) =>
                                       <PopupMenuEntry>[
-                                        const PopupMenuItem(
-                                          child: Text('Edit'),
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            isEditing = true;
+                                            institutionName.text = snapshot
+                                                .data![index].institutionName;
+                                            institutionAddress.text = snapshot
+                                                .data![index].institutionAddress
+                                                .toString();
+                                            institutionTelephone.text = snapshot
+                                                .data![index]
+                                                .institutionTelephone
+                                                .toString();
+                                            institutionEmail.text = snapshot
+                                                .data![index].institutionEmail
+                                                .toString();
+                                            Future.delayed(
+                                                const Duration(seconds: 0),
+                                                () => displayButtomSheet(
+                                                    context,
+                                                    snapshot.data![index].id
+                                                        .toString()));
+                                          },
+                                          child: const Text('Edit'),
                                         ),
-                                        const PopupMenuItem(
-                                          child: Text('Delete'),
+                                        PopupMenuItem(
+                                          child: const Text('Delete'),
+                                          onTap: () {
+                                            Future.delayed(
+                                              const Duration(seconds: 0),
+                                              () => showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                  title: const Text(
+                                                      'Confirm Account Removal'),
+                                                  content: const Text(
+                                                      'You are about to remove one of your accounts. This action cannot be undone. Please confirm the removal'),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            'CANCEL')),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          deleteUserAcount(
+                                                              snapshot
+                                                                  .data![index]
+                                                                  .id
+                                                                  .toString());
+                                                        },
+                                                        child: const Text(
+                                                            'CONFIRM')),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
                                         const PopupMenuItem(
                                           child: Text('Set as Default'),
@@ -208,6 +172,102 @@ class UserAccountsPageState extends State<UserAccountsPage> {
         ));
   }
 
+  Future<dynamic> displayButtomSheet(BuildContext context, String accountid) {
+    return showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))),
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                      padding: const EdgeInsets.all(10),
+                      child: const Text('Enter Health Facility Details')),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                      controller: institutionName,
+                      decoration: const InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(),
+                          labelText: 'Health Facility Name',
+                          hintText: 'Enter your Health Facility\'s Name here')),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                      controller: institutionAddress,
+                      decoration: const InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(),
+                          labelText: 'Health Facility Address',
+                          hintText:
+                              'Enter your Health Facility\'s Address here')),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                      controller: institutionEmail,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(),
+                          labelText: 'Health Facility Email',
+                          hintText: 'Enter your Health Facility\'s Email')),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                      controller: institutionTelephone,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(),
+                          labelText: 'Health Facility Telephone No',
+                          hintText:
+                              'Enter your Health Facility\'s Telephone No here')),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent),
+                          onPressed: (() {
+                            Navigator.pop(context);
+                          }),
+                          child: const Text('Cancel')),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green),
+                          onPressed: (() {
+                            !isEditing
+                                ? addUserAcount()
+                                : editUserAcount(accountid);
+                          }),
+                          child: const Text('Save')),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Future<List<UserAccount>> fetchUserAccounts() async {
     final response = await _dioClient.getUserAccounts(GlobalData.prescriberid);
     return response;
@@ -216,11 +276,12 @@ class UserAccountsPageState extends State<UserAccountsPage> {
   Future<void> addUserAcount() async {
     bool outcome;
     UserAccount useraccount = UserAccount(
-        defaultAccount: false,
-        institutionName: institutionName.text,
-        institutionAddress: institutionAddress.text,
-        institutionEmail: institutionEmail.text,
-        institutionTelephone: institutionTelephone.text);
+      defaultAccount: false,
+      institutionName: institutionName.text,
+      institutionAddress: institutionAddress.text,
+      institutionEmail: institutionEmail.text,
+      institutionTelephone: institutionTelephone.text,
+    );
 
     outcome = await _dioClient.addUserAccount(useraccount: useraccount);
     if (outcome) {
@@ -229,5 +290,58 @@ class UserAccountsPageState extends State<UserAccountsPage> {
         useraccounts = fetchUserAccounts();
       });
     }
+  }
+
+  Future<void> editUserAcount(String accountid) async {
+    bool outcome;
+    LoadingIndicatorDialog().show(context, 'Updating Account');
+    UserAccount useraccount = UserAccount(
+      defaultAccount: false,
+      institutionName: institutionName.text,
+      institutionAddress: institutionAddress.text,
+      institutionEmail: institutionEmail.text,
+      institutionTelephone: institutionTelephone.text,
+    );
+
+    outcome =
+        await _dioClient.updateUserAccount(accountid, useraccount: useraccount);
+    LoadingIndicatorDialog().dismiss();
+    if (outcome) {
+      setState(() {
+        useraccounts = fetchUserAccounts();
+      });
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        content: const Text('Account Updated Successfully'),
+        backgroundColor: Colors.green.shade300,
+      ));
+    } else {
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        content: const Text('Error Updating account. Try again'),
+        backgroundColor: Colors.red.shade300,
+      ));
+    }
+    Navigator.pop(navigatorKey.currentContext!);
+  }
+
+  Future<void> deleteUserAcount(String accountid) async {
+    bool outcome;
+    LoadingIndicatorDialog().show(context, 'Removing Account');
+    outcome = await _dioClient.deleteUserAccount(accountid);
+    LoadingIndicatorDialog().dismiss();
+    if (outcome) {
+      setState(() {
+        useraccounts = fetchUserAccounts();
+      });
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        content: const Text('Account Removed Successfully'),
+        backgroundColor: Colors.green.shade300,
+      ));
+    } else {
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        content: const Text('Error removing account. Try again'),
+        backgroundColor: Colors.red.shade300,
+      ));
+    }
+    Navigator.pop(navigatorKey.currentContext!);
   }
 }
