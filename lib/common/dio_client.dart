@@ -255,4 +255,19 @@ class DioClient {
     }
     return false;
   }
+
+  Future<bool> makeUserAccountDefault(String accountid) async {
+    try {
+      Response response = await _dio.post(
+        '/user/makeinstitutiondefault/${GlobalData.prescriberid}/$accountid',
+      );
+      if (response.statusCode == 202) {
+        return true;
+      }
+    } on DioError catch (err) {
+      log(err.message);
+      return false;
+    }
+    return false;
+  }
 }

@@ -65,7 +65,7 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                             children: <Widget>[
                               Expanded(
                                   child: Text(
-                                      snapshot.data![index].institutionName)),
+                                      '${snapshot.data![index].institutionName} ${snapshot.data![index].defaultAccount == true ? '(Default)' : ''}')),
                               PopupMenuButton(
                                   itemBuilder: (BuildContext context) =>
                                       <PopupMenuEntry>[
@@ -130,8 +130,13 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                                             );
                                           },
                                         ),
-                                        const PopupMenuItem(
-                                          child: Text('Set as Default'),
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            makeUserAcountDefault(snapshot
+                                                .data![index].id
+                                                .toString());
+                                          },
+                                          child: const Text('Set as Default'),
                                         ),
                                       ])
                             ],
@@ -339,6 +344,28 @@ class UserAccountsPageState extends State<UserAccountsPage> {
     } else {
       scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
         content: const Text('Error removing account. Try again'),
+        backgroundColor: Colors.red.shade300,
+      ));
+    }
+    Navigator.pop(navigatorKey.currentContext!);
+  }
+
+  Future<void> makeUserAcountDefault(String accountid) async {
+    bool outcome;
+    LoadingIndicatorDialog().show(context, 'Making Account Default');
+    outcome = await _dioClient.makeUserAccountDefault(accountid);
+    LoadingIndicatorDialog().dismiss();
+    if (outcome) {
+      setState(() {
+        useraccounts = fetchUserAccounts();
+      });
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        content: const Text('Account made default'),
+        backgroundColor: Colors.green.shade300,
+      ));
+    } else {
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        content: const Text('Error account the default. Try again'),
         backgroundColor: Colors.red.shade300,
       ));
     }
