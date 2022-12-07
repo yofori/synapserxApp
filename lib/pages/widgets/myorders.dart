@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/models/models.dart';
@@ -121,6 +122,12 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                                 .toLowerCase()
                                 .contains(searchString)
                             ? ExpansionTile(
+                                textColor:
+                                    const Color.fromARGB(255, 2, 64, 116),
+                                iconColor:
+                                    const Color.fromARGB(255, 2, 64, 116),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 243, 236, 224),
                                 initiallyExpanded: index == selected,
                                 onExpansionChanged: (newState) {
                                   if (newState) {
@@ -144,7 +151,10 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                        '${snapshot.data?[index].pxFirstname} ${snapshot.data?[index].pxSurname}'),
+                                      '${snapshot.data?[index].pxFirstname} ${snapshot.data?[index].pxSurname}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
                                   ),
                                 ),
                                 subtitle: Text(

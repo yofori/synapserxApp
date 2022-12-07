@@ -20,6 +20,7 @@ class UserAccountsPageState extends State<UserAccountsPage> {
   TextEditingController institutionEmail = TextEditingController();
   late Future<List<UserAccount>> useraccounts;
   bool isEditing = false;
+  bool isEmpty = false;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class UserAccountsPageState extends State<UserAccountsPage> {
           builder: (context, AsyncSnapshot<List<UserAccount>> snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
+                isEmpty = true;
                 return const Align(
                   alignment: Alignment.center,
                   child: Text(
@@ -65,7 +67,7 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                             children: <Widget>[
                               Expanded(
                                   child: Text(
-                                      '${snapshot.data![index].institutionName} ${snapshot.data![index].defaultAccount == true ? '(Default)' : ''}')),
+                                      '${snapshot.data![index].institutionName} ${snapshot.data![index].defaultAccount == true ? '\u2705' : ''}')),
                               PopupMenuButton(
                                   itemBuilder: (BuildContext context) =>
                                       <PopupMenuEntry>[
@@ -132,9 +134,11 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                                         ),
                                         PopupMenuItem(
                                           onTap: () {
-                                            makeUserAcountDefault(snapshot
-                                                .data![index].id
-                                                .toString());
+                                            Future.delayed(
+                                                const Duration(seconds: 0),
+                                                () => makeUserAcountDefault(
+                                                    snapshot.data![index].id
+                                                        .toString()));
                                           },
                                           child: const Text('Set as Default'),
                                         ),
@@ -369,6 +373,5 @@ class UserAccountsPageState extends State<UserAccountsPage> {
         backgroundColor: Colors.red.shade300,
       ));
     }
-    Navigator.pop(navigatorKey.currentContext!);
   }
 }

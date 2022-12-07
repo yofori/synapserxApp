@@ -91,23 +91,23 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                       child: SizedBox(
                         width: 300,
                         child: Column(children: [
-                          TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'A Patient ID is required';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.person),
-                                labelText: 'Patient ID',
-                                hintText: 'Enter Patient ID'),
-                            style: const TextStyle(
-                              color: Color(0xFF000000),
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                          // TextFormField(
+                          //   validator: (value) {
+                          //     if (value!.isEmpty) {
+                          //       return 'A Patient ID is required';
+                          //     }
+                          //     return null;
+                          //   },
+                          //   decoration: const InputDecoration(
+                          //       border: OutlineInputBorder(),
+                          //       prefixIcon: Icon(Icons.person),
+                          //       labelText: 'Patient ID',
+                          //       hintText: 'Enter Patient ID'),
+                          //   style: const TextStyle(
+                          //     color: Color(0xFF000000),
+                          //     fontWeight: FontWeight.w300,
+                          //   ),
+                          // ),
                           const SizedBox(
                             height: 20,
                           ),
