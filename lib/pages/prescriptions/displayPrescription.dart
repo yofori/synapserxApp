@@ -109,17 +109,6 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
                                       textAlign: TextAlign.left,
                                       'Prescription Status: ${(prescriptionInfo.status)}'),
                                 ),
-                                // const SizedBox(
-                                //   height: 15,
-                                // ),
-                                // const SizedBox(
-                                //     width: double.infinity,
-                                //     child: Text(
-                                //       'Medications',
-                                //       textAlign: TextAlign.left,
-                                //       style: TextStyle(
-                                //           fontWeight: FontWeight.w600),
-                                //     )),
                               ]),
                               Center(
                                   child: buildPrescription(prescriptionInfo)),
@@ -182,26 +171,31 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
             label: Container(
                 alignment: Alignment.bottomLeft,
                 width: width * .05,
+                height: 15,
                 child: const Text('#'))),
         DataColumn(
             label: Container(
                 alignment: Alignment.bottomLeft,
                 width: width * .40,
+                height: 15,
                 child: const Text('Name of Medication'))),
         DataColumn(
             label: Container(
                 alignment: Alignment.bottomLeft,
                 width: width * .15,
+                height: 15,
                 child: const Text('Dose'))),
         DataColumn(
             label: Container(
-                alignment: Alignment.bottomLeft,
+                alignment: Alignment.bottomCenter,
                 width: width * .15,
-                child: const Text('Dosage\nRegimen'))),
+                height: 15,
+                child: const Text('Dosage'))),
         DataColumn(
             label: Container(
                 alignment: Alignment.bottomLeft,
                 width: width * .15,
+                height: 15,
                 child: const Text('Duration'))),
       ];
     }
