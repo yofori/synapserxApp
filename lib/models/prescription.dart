@@ -16,6 +16,11 @@ class Prescription {
   String? prescriberID;
   String? prescriberMDCRegNo;
   String? prescriberName;
+  String? prescriberInstitution;
+  String? prescriberInstitutionName;
+  String? prescriberInstitutionAddress;
+  String? prescriberInstitutionTelephone;
+  String? prescriberInstitutionEmail;
   bool? refillRx;
   bool? isPxRegistered;
   String? status;
@@ -35,6 +40,11 @@ class Prescription {
       this.prescriberID,
       this.prescriberMDCRegNo,
       this.prescriberName,
+      this.prescriberInstitution,
+      this.prescriberInstitutionName,
+      this.prescriberInstitutionAddress,
+      this.prescriberInstitutionTelephone,
+      this.prescriberInstitutionEmail,
       this.refillRx,
       this.isPxRegistered,
       this.status,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/sqlite_service.dart';
+import 'package:synapserx_prescriber/pages/widgets/drawerbutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
 class MyPrescriptionsPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class MyPrescriptionsPage extends StatefulWidget {
 }
 
 class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
+  final GlobalKey<ScaffoldState> _skey = GlobalKey();
   List allMedicines = [];
   List filteredMedicines = [];
   bool _isLoading = true;
@@ -80,6 +82,7 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
         child: Scaffold(
             drawer: const RxDrawer(),
             appBar: AppBar(
+                leading: DrawerButton(key: _skey),
                 title: !_searchBoolean
                     ? const Text('SynapseRx')
                     : _searchTextField(),

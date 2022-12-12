@@ -44,6 +44,8 @@ class DioClient {
           GlobalData.firstname = (await storage.read(key: 'firstname'))!;
           GlobalData.prescriberid = (await storage.read(key: 'prescriberid'))!;
           GlobalData.accessToken = (await storage.read(key: 'token'))!;
+          GlobalData.defaultAccount =
+              (await storage.read(key: 'defaultAccount'))!;
           return 2; //authentication sucessful via local storage
         }
         return 0;
@@ -115,6 +117,7 @@ class DioClient {
     String accessToken = res.data['token'];
     String refreshToken = res.data['refreshtoken'];
     String username = res.data['username'];
+    List prescriberInstitutions = res.data['prescriberInstitutions'];
     GlobalData.accessToken = accessToken;
     GlobalData.refreshToken = refreshToken;
     GlobalData.username = username;
@@ -129,6 +132,16 @@ class DioClient {
     GlobalData.mdcregno = mdcregno;
     GlobalData.firstname = firstname;
     GlobalData.prescriberid = prescriberid;
+    GlobalData.useraccounts = prescriberInstitutions;
+    //get the default account from which the prescriber prescribes from if it has been set. It will bypass if it is the firt time
+    if (prescriberInstitutions.isNotEmpty) {
+      var result = prescriberInstitutions
+          .firstWhere((account) => account['defaultAccount'] == true);
+      GlobalData.defaultAccount = result['_id'];
+    } else {
+      GlobalData.defaultAccount = '';
+    }
+
     const storage = FlutterSecureStorage();
     await storage.write(key: "token", value: accessToken);
     await storage.write(key: "refreshtoken", value: refreshToken);
@@ -139,5 +152,7 @@ class DioClient {
     await storage.write(key: "firstname", value: firstname);
     await storage.write(key: "surname", value: surname);
     await storage.write(key: "prescriberid", value: prescriberid);
+    await storage.write(
+        key: "defaultAccount", value: GlobalData.defaultAccount);
   }
 }

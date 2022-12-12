@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/models/models.dart';
+import 'package:synapserx_prescriber/pages/widgets/drawerbutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/prescriptionactionbar.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
@@ -19,6 +19,7 @@ class PrescriptionsPage extends StatefulWidget {
 
 class _PrescriptionsPageState extends State<PrescriptionsPage> {
   GlobalKey _key = GlobalKey();
+  final GlobalKey<ScaffoldState> _skey = GlobalKey();
   final DioClient _dioClient = DioClient();
   final TextEditingController _textController = TextEditingController();
   bool _searchBoolean = false;
@@ -37,6 +38,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
     return Scaffold(
       drawer: const RxDrawer(),
       appBar: AppBar(
+          leading: DrawerButton(key: _skey),
           title: !_searchBoolean
               ? const Text('SynapseRx')
               : TextField(
@@ -109,7 +111,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                       return const Align(
                         alignment: Alignment.center,
                         child: Text(
-                            'You haven\'t wrriten any orders yet.\nClick the add button to add orders',
+                            'You haven\'t written any orders yet.\nClick the add button to add orders',
                             textAlign: TextAlign.center),
                       );
                     }

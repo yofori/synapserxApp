@@ -46,6 +46,7 @@ class RxDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            dense: true,
             leading: const Icon(Icons.person_add_alt),
             title: const Text('Invite Colleagues'),
             onTap: () {
@@ -54,8 +55,15 @@ class RxDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            dense: true,
             leading: const Icon(Icons.manage_accounts),
-            title: const Text('Accounts ....'),
+            title: const Text('Accounts'),
+            trailing: GlobalData.defaultAccount.isEmpty
+                ? const Icon(
+                    Icons.notifications_active,
+                    color: Colors.red,
+                  )
+                : null,
             onTap: () {
               Navigator.push(
                   context,
@@ -64,8 +72,9 @@ class RxDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+              dense: true,
               leading: const Icon(Icons.key),
-              title: const Text('Change Password ....'),
+              title: const Text('Change Password'),
               onTap: () {
                 Navigator.push(
                     context,
@@ -74,6 +83,7 @@ class RxDrawer extends StatelessWidget {
               }),
           const Divider(),
           ListTile(
+            dense: true,
             leading: const Icon(Icons.logout),
             title: const Text('Sign Out'),
             onTap: () {

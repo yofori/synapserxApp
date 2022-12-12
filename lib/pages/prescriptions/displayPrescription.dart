@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/main.dart';
-import 'package:synapserx_prescriber/models/medications.dart';
 import 'package:synapserx_prescriber/models/prescription.dart';
 
 class DisplayPrescriptionPage extends StatefulWidget {
@@ -223,7 +222,7 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
           .toList();
     }
 
-    return Container(
+    return SizedBox(
       width: width,
       child: DataTable(
           columnSpacing: 0,

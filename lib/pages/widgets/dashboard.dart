@@ -8,6 +8,8 @@ import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/createadhocpatient.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
+import 'package:synapserx_prescriber/pages/user/useraccounts.dart';
+import 'package:synapserx_prescriber/pages/widgets/drawerbutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxcustombutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
@@ -19,6 +21,7 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
+  final GlobalKey<ScaffoldState> _skey = GlobalKey();
   final DioClient _dioClient = DioClient();
   String greeting() {
     var hour = DateTime.now().hour;
@@ -47,6 +50,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: DrawerButton(
+            key: _skey,
+          ),
           title: const Text('SynapseRx'),
         ),
         drawer: const RxDrawer(),
@@ -123,11 +129,50 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                                 icon: FontAwesomeIcons.filePrescription,
                                 title: 'New\nPrescription',
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CreateAdhocPxPage()));
+                                  GlobalData.defaultAccount.isEmpty
+                                      ? Future.delayed(
+                                          const Duration(seconds: 0),
+                                          () => showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                      actions: [
+                                                        TextButton(
+                                                            onPressed: (() {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              const UserAccountsPage()));
+                                                            }),
+                                                            child: const Text(
+                                                                'Setup Account')),
+                                                        TextButton(
+                                                            onPressed: (() {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            }),
+                                                            child: const Text(
+                                                                'Cancel'))
+                                                      ],
+                                                      title: const Text(
+                                                        'Account Setup Required',
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                      content: Text(
+                                                        'You need to setup at least one Institution Account before you can start prescribing',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ))))
+                                      : Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const CreateAdhocPxPage()));
                                 }),
                             RxButton(
                                 icon: MdiIcons.qrcodeScan,

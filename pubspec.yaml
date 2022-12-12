@@ -55,6 +55,7 @@ dependencies:
   material_design_icons_flutter: ^6.0.7096
   font_awesome_flutter: ^10.2.1
   icofont_flutter: ^1.4.0
+  badges: ^2.0.3
 
 dev_dependencies:
   flutter_test:

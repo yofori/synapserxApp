@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/common/service.dart';
@@ -278,7 +280,11 @@ class UserAccountsPageState extends State<UserAccountsPage> {
   }
 
   Future<List<UserAccount>> fetchUserAccounts() async {
-    final response = await _dioClient.getUserAccounts(GlobalData.prescriberid);
+    List<UserAccount> response =
+        await _dioClient.getUserAccounts(GlobalData.prescriberid);
+    var formattedaccount = jsonDecode(jsonEncode(response));
+    print(formattedaccount);
+    GlobalData.useraccounts = formattedaccount;
     return response;
   }
 

@@ -3,6 +3,7 @@ import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/pages/patients/addassociations.dart';
+import 'package:synapserx_prescriber/pages/widgets/drawerbutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
 
 import '../patients/patientprescriptions.dart';
@@ -18,6 +19,7 @@ class PatientsPage extends StatefulWidget {
 
 class _PatientsPageState extends State<PatientsPage> {
   GlobalKey _key = GlobalKey();
+  final GlobalKey<ScaffoldState> _skey = GlobalKey();
   static String accessToken = GlobalData.accessToken;
   final DioClient _dioClient = DioClient();
   final TextEditingController _textController = TextEditingController();
@@ -45,6 +47,7 @@ class _PatientsPageState extends State<PatientsPage> {
     return Scaffold(
       drawer: const RxDrawer(),
       appBar: AppBar(
+          leading: DrawerButton(key: _skey),
           title: !_searchBoolean
               ? const Text('SynapseRx')
               : TextField(

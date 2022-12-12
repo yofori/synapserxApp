@@ -149,6 +149,7 @@ class DioClient {
       required int pxAge,
       required String pxDOB,
       required bool isRegistered,
+      required String prescriberAccount,
       String? pxEmail,
       String? pxTelephone,
       required String pxGender}) async {
@@ -166,7 +167,8 @@ class DioClient {
           'pxEmail': pxEmail,
           'pxTelephone': pxTelephone,
           'pxgender': pxGender,
-          'isPxRegistered': isRegistered
+          'isPxRegistered': isRegistered,
+          'prescriberInstitution': prescriberAccount
         },
       );
       if (response.statusCode == 201) {
@@ -193,12 +195,10 @@ class DioClient {
   }
 
   Future<dynamic> updatePrescription(
-      {required String prescriptionID, required List medicines}) async {
+      {required String prescriptionID, required data}) async {
     try {
-      Response response = await _dio.put(
-        '/prescription/update/$prescriptionID',
-        data: {'medications': medicines},
-      );
+      Response response =
+          await _dio.put('/prescription/update/$prescriptionID', data: data);
       if (response.statusCode == 200) {
         return response.data;
       }
