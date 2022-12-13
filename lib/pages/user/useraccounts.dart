@@ -98,7 +98,8 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                                           child: const Text('Edit'),
                                         ),
                                         PopupMenuItem(
-                                          child: const Text('Delete'),
+                                          enabled: !snapshot
+                                              .data![index].defaultAccount,
                                           onTap: () {
                                             Future.delayed(
                                               const Duration(seconds: 0),
@@ -133,8 +134,11 @@ class UserAccountsPageState extends State<UserAccountsPage> {
                                               ),
                                             );
                                           },
+                                          child: const Text('Delete'),
                                         ),
                                         PopupMenuItem(
+                                          enabled: !snapshot
+                                              .data![index].defaultAccount,
                                           onTap: () {
                                             Future.delayed(
                                                 const Duration(seconds: 0),
@@ -283,7 +287,6 @@ class UserAccountsPageState extends State<UserAccountsPage> {
     List<UserAccount> response =
         await _dioClient.getUserAccounts(GlobalData.prescriberid);
     var formattedaccount = jsonDecode(jsonEncode(response));
-    print(formattedaccount);
     GlobalData.useraccounts = formattedaccount;
     return response;
   }

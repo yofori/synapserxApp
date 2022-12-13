@@ -458,7 +458,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     List retrievedMedicines = [];
     var prescription = await _dioClient.getPrescription(widget.prescriptionID);
     if (prescription != null) {
-      if (prescription.prescriberInstitution!.isNotEmpty) {
+      if (prescription.prescriberInstitution != null) {
         defaultAccount = prescription.prescriberInstitution!;
       }
       retrievedMedicines = prescription.medications!.toList(growable: true);

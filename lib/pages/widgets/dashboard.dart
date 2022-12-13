@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttericon/entypo_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
@@ -138,6 +139,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                                                       actions: [
                                                         TextButton(
                                                             onPressed: (() {
+                                                              Navigator.pop(
+                                                                  context);
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
@@ -163,16 +166,179 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                                                         textAlign:
                                                             TextAlign.center,
                                                       ),
-                                                      content: Text(
+                                                      content: const Text(
                                                         'You need to setup at least one Institution Account before you can start prescribing',
                                                         textAlign:
                                                             TextAlign.center,
                                                       ))))
-                                      : Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CreateAdhocPxPage()));
+                                      : showModalBottomSheet(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                          10.0))),
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Container(
+                                                      alignment: Alignment
+                                                          .center,
+                                                      width: double.infinity,
+                                                      height: 40,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.green,
+                                                          border: Border.all(
+                                                              color: Colors
+                                                                  .green),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                      .only(
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10.0),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10.0))),
+                                                      child: const Text(
+                                                        'Choose Patient Type',
+                                                        textScaleFactor: 1,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      )),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: InkWell(
+                                                      splashColor: const Color(
+                                                          0xFF3B4257),
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const CreateAdhocPxPage()));
+                                                      },
+                                                      child: Card(
+                                                        elevation: 8,
+                                                        child: Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          height: 60,
+                                                          child: Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              const Icon(
+                                                                Entypo.user,
+                                                                size: 40,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 20,
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: const [
+                                                                  Text(
+                                                                      'Adhoc Patient',
+                                                                      style: TextStyle(
+                                                                          fontWeight:
+                                                                              FontWeight.bold)),
+                                                                  Text(
+                                                                    'Choose this option for patients \nwho are not registered on SynapseRx',
+                                                                  )
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: InkWell(
+                                                      splashColor: const Color(
+                                                          0xFF3B4257),
+                                                      onTap: () {},
+                                                      child: Card(
+                                                        elevation: 8,
+                                                        child: Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          height: 70,
+                                                          child: Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              const Icon(
+                                                                Entypo.users,
+                                                                size: 40,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 20,
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: const [
+                                                                  Text(
+                                                                      'Registered Patients',
+                                                                      style: TextStyle(
+                                                                          fontWeight:
+                                                                              FontWeight.bold)),
+                                                                  Text(
+                                                                    'Choose this option for patients who are \nregistered on SynapseRx.You can select\nfrom your list or add them via their QR Code',
+                                                                  )
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          });
                                 }),
                             RxButton(
                                 icon: MdiIcons.qrcodeScan,

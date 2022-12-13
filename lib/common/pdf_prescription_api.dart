@@ -70,10 +70,13 @@ class PdfPrescriptionApi {
   static Widget buildPrescriberAddress(Prescription prescription) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(prescription.prescriberName.toString(),
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(prescription.prescriberInstitutionName.toString().toUpperCase(),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          Text(prescription.prescriberMDCRegNo.toString()),
+          Text(prescription.prescriberInstitutionAddress.toString()),
+          SizedBox(height: 1 * PdfPageFormat.mm),
+          Text(
+              'Email: ${prescription.prescriberInstitutionEmail.toString()}  Telephone: ${prescription.prescriberInstitutionTelephone.toString()}'),
         ],
       );
 
@@ -121,7 +124,7 @@ class PdfPrescriptionApi {
         0: Alignment.bottomCenter,
         1: Alignment.bottomLeft,
         2: Alignment.bottomLeft,
-        3: Alignment.bottomLeft,
+        3: Alignment.bottomCenter,
         4: Alignment.bottomLeft
       },
       cellHeight: 30,

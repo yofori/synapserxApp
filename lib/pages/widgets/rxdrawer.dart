@@ -50,6 +50,7 @@ class RxDrawer extends StatelessWidget {
             leading: const Icon(Icons.person_add_alt),
             title: const Text('Invite Colleagues'),
             onTap: () {
+              Navigator.pop(context);
               // Update the state of the app.
               // ...
             },
@@ -65,6 +66,7 @@ class RxDrawer extends StatelessWidget {
                   )
                 : null,
             onTap: () {
+              Navigator.pop(context);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -76,6 +78,7 @@ class RxDrawer extends StatelessWidget {
               leading: const Icon(Icons.key),
               title: const Text('Change Password'),
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -87,6 +90,7 @@ class RxDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Sign Out'),
             onTap: () {
+              Navigator.pop(context);
               logout();
             },
           ),

@@ -120,7 +120,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                       padding: const EdgeInsets.all(8),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return ('${snapshot.data![index].pxSurname} ${snapshot.data![index].pxSurname}')
+                        return ('${snapshot.data![index].pxFirstname} ${snapshot.data![index].pxSurname}')
                                 .toLowerCase()
                                 .contains(searchString)
                             ? ExpansionTile(
