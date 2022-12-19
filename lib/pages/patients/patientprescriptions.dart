@@ -4,6 +4,7 @@ import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
 import 'package:synapserx_prescriber/pages/widgets/prescriptionactionbar.dart';
+import 'package:synapserx_prescriber/common/stringutils.dart';
 
 class PatientPrescriptionsPage extends StatefulWidget {
   const PatientPrescriptionsPage({
@@ -76,7 +77,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
-              child: Text('Sex: $pxGender   Age: $pxAge',
+              child: Text('Sex: ${pxGender.toCapitalized()}   Age: $pxAge',
                   textAlign: TextAlign.left,
                   style: const TextStyle(
                     fontSize: 16,

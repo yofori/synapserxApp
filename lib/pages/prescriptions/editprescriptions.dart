@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/common/service.dart';
+import 'package:synapserx_prescriber/common/stringutils.dart';
 import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/selectmedicine.dart';
@@ -197,7 +198,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
                             child: Text(
-                                'Sex: ${widget.pxGender.toUpperCase()}   Age: ${widget.pxAge} ',
+                                'Sex: ${widget.pxGender.toCapitalized()}   Age: ${widget.pxAge} ',
                                 style: const TextStyle(
                                   fontSize: 16,
                                 )),

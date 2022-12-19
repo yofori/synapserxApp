@@ -9,7 +9,8 @@ import 'package:synapserx_prescriber/pages/widgets/medicinespage.dart';
 import 'package:icofont_flutter/icofont_flutter.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, required this.showIndex}) : super(key: key);
+  final int showIndex;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,6 +18,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.showIndex;
+  }
 
   final List _screens = [
     {"screen": const HomeDashboardPage()},

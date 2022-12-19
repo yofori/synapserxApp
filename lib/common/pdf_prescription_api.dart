@@ -5,6 +5,7 @@ import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
+import 'package:synapserx_prescriber/common/stringutils.dart';
 
 class PdfPrescriptionApi {
   static Future<File> generate(Prescription prescription) async {
@@ -54,7 +55,7 @@ class PdfPrescriptionApi {
                   fontWeight: FontWeight.normal, fontSize: 14, lineSpacing: 2)),
           SizedBox(height: 0.125 * PdfPageFormat.cm),
           Text(
-              'Sex / Age: ${prescription.pxAge}yrs / ${prescription.pxgender.toUpperCase()}',
+              'Sex / Age: ${prescription.pxAge}yrs / ${prescription.pxgender.toCapitalized()}',
               style: TextStyle(
                   fontWeight: FontWeight.normal, fontSize: 14, lineSpacing: 2)),
           SizedBox(height: 0.5 * PdfPageFormat.cm),
@@ -75,8 +76,11 @@ class PdfPrescriptionApi {
           SizedBox(height: 1 * PdfPageFormat.mm),
           Text(prescription.prescriberInstitutionAddress.toString()),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          Text(
-              'Email: ${prescription.prescriberInstitutionEmail.toString()}  Telephone: ${prescription.prescriberInstitutionTelephone.toString()}'),
+          Text(prescription.prescriberInstitutionEmail == null ||
+                  prescription.prescriberInstitutionEmail.toString().trim() ==
+                      ''
+              ? ''
+              : 'Email: ${prescription.prescriberInstitutionEmail.toString()} ${prescription.prescriberInstitutionEmail == null || prescription.prescriberInstitutionEmail.toString().trim() == '' ? '' : 'Telephone: ${prescription.prescriberInstitutionTelephone.toString()}'}'),
         ],
       );
 
@@ -189,5 +193,12 @@ class PdfPrescriptionApi {
         ],
       ),
     );
+  }
+
+  static String capitalizeAll(String text) {
+    return text.replaceAllMapped(RegExp(r'\.\s+[a-z]|^[a-z]'), (m) {
+      final String match = m[0] ?? '';
+      return match.toUpperCase();
+    });
   }
 }

@@ -294,7 +294,7 @@ class UserAccountsPageState extends State<UserAccountsPage> {
   Future<void> addUserAcount() async {
     bool outcome;
     UserAccount useraccount = UserAccount(
-      defaultAccount: false,
+      defaultAccount: GlobalData.defaultAccount.isEmpty,
       institutionName: institutionName.text,
       institutionAddress: institutionAddress.text,
       institutionEmail: institutionEmail.text,

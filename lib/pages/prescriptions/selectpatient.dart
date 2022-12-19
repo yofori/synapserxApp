@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/service.dart';
-import 'package:synapserx_prescriber/models/associations.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
-import 'package:synapserx_prescriber/pages/patients/addassociations.dart';
-import 'package:synapserx_prescriber/pages/widgets/drawerbutton.dart';
-import 'package:synapserx_prescriber/pages/widgets/rxdrawer.dart';
-
-import '../patients/patientprescriptions.dart';
+import 'package:synapserx_prescriber/common/stringutils.dart';
+import 'package:synapserx_prescriber/models/models.dart';
+import 'package:synapserx_prescriber/pages/homepage.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
 
 // ignore: must_be_immutable
-class PatientsPage extends StatefulWidget {
-  const PatientsPage({Key? key, required this.title}) : super(key: key);
+class SelectPatientsPage extends StatefulWidget {
+  const SelectPatientsPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<PatientsPage> createState() => _PatientsPageState();
+  State<SelectPatientsPage> createState() => _SelectPatientsPageState();
 }
 
-class _PatientsPageState extends State<PatientsPage> {
+class _SelectPatientsPageState extends State<SelectPatientsPage> {
   GlobalKey _key = GlobalKey();
-  final GlobalKey<ScaffoldState> _skey = GlobalKey();
   static String accessToken = GlobalData.accessToken;
   final DioClient _dioClient = DioClient();
   final TextEditingController _textController = TextEditingController();
   bool _searchBoolean = false;
   late Future<List<Associations>> associations;
   String searchString = "";
+  Patient patient = Patient();
+  int pxAge = 0;
+  String pxGender = '';
 
   @override
   void initState() {
@@ -45,11 +45,9 @@ class _PatientsPageState extends State<PatientsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const RxDrawer(),
       appBar: AppBar(
-          leading: DrawerButton(key: _skey),
           title: !_searchBoolean
-              ? const Text('SynapseRx')
+              ? Text(widget.title)
               : TextField(
                   autofocus:
                       true, //Display the keyboard when TextField is displayed
@@ -104,13 +102,6 @@ class _PatientsPageState extends State<PatientsPage> {
                         });
                       })
                 ]),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Patient',
-        child: const Icon(Icons.person_add),
-        onPressed: () {
-          navigateToAddAssociation();
-        },
-      ),
       body: RefreshIndicator(
         onRefresh: () async {
           _refresh();
@@ -139,18 +130,37 @@ class _PatientsPageState extends State<PatientsPage> {
                                 .toLowerCase()
                                 .contains(searchString)
                             ? ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PatientPrescriptionsPage(
-                                              patientuid: snapshot
-                                                  .data![index].patientuid,
-                                              patientName: snapshot
-                                                  .data![index].patientFullname,
-                                            )),
-                                  );
+                                onTap: () async {
+                                  await getPatientDetails(
+                                      snapshot.data![index].patientuid);
+                                  if (!mounted) return;
+                                  await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditPrescriptionPage(
+                                                isEditting: false,
+                                                isRegistered: true,
+                                                patientName: snapshot
+                                                    .data![index]
+                                                    .patientFullname,
+                                                patientID: snapshot
+                                                    .data![index].patientuid,
+                                                prescriptionID: '',
+                                                pxAge: pxAge.toString(),
+                                                pxDOB: '',
+                                                pxFirstname: '',
+                                                pxGender: pxGender,
+                                                pxSurname: '',
+                                                title: 'Create Prescription',
+                                              ))).whenComplete(() =>
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomePage(
+                                                    showIndex: 2,
+                                                  ))));
                                 },
                                 leading: CircleAvatar(
                                   radius: 25,
@@ -165,7 +175,10 @@ class _PatientsPageState extends State<PatientsPage> {
                                 ),
                                 title: Container(
                                   //height: 43,
-                                  decoration: const BoxDecoration(),
+                                  decoration: const BoxDecoration(
+                                      //border: Border(
+                                      //bottom: BorderSide(color: Colors.grey)),
+                                      ),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
@@ -205,22 +218,19 @@ class _PatientsPageState extends State<PatientsPage> {
     return response;
   }
 
-  void navigateToAddAssociation() async {
-    Navigator.of(context)
-        .push(MaterialPageRoute(
-            builder: (context) => const AddAssociationsPage()))
-        .whenComplete(() {
-      setState(() {
-        associations = fetchAssociations();
-      });
-    });
-  }
-
   Future<void> _refresh() async {
     if (mounted) {
       _key = GlobalKey();
       setState(() {});
     }
     Future.value(null);
+  }
+
+  Future<void> getPatientDetails(String patientuid) async {
+    patient = (await _dioClient.getPatientDetails(patientuid))!;
+    setState(() {
+      pxAge = calculateAge(patient.dateOfBirth!);
+      pxGender = patient.gender!.toUpperCase();
+    });
   }
 }

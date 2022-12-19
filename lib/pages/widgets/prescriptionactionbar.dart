@@ -39,11 +39,27 @@ class PrescriptionActionBarState extends State<PrescriptionActionBar> {
                       final pdfFile = await pdfgen.PdfPrescriptionApi.generate(
                           widget.prescription);
                       // ignore: use_build_context_synchronously
+                      PdfApi.sharePDF(context, pdfFile);
+                      //PdfApi.openFile(pdfFile);
+                    }),
+                const Text(
+                  'Share ',
+                  textAlign: TextAlign.center,
+                ),
+              ]),
+              Column(children: [
+                IconButton(
+                    icon: const Icon(Icons.preview),
+                    tooltip: 'Preview Prescription',
+                    onPressed: () async {
+                      final pdfFile = await pdfgen.PdfPrescriptionApi.generate(
+                          widget.prescription);
+                      // ignore: use_build_context_synchronously
                       //PdfApi.sharePDF(context, pdfFile);
                       PdfApi.openFile(pdfFile);
                     }),
                 const Text(
-                  'Share ',
+                  'Preview',
                   textAlign: TextAlign.center,
                 ),
               ]),
@@ -144,7 +160,7 @@ class PrescriptionActionBarState extends State<PrescriptionActionBar> {
               Column(
                 children: [
                   IconButton(
-                      icon: const Icon(Icons.refresh),
+                      icon: const Icon(Icons.copy),
                       tooltip: 'Refill Prescription',
                       onPressed: () {}),
                   const Text(

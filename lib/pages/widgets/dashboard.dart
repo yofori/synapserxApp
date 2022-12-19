@@ -9,6 +9,7 @@ import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/createadhocpatient.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/getprescription.dart';
+import 'package:synapserx_prescriber/pages/prescriptions/selectpatient.dart';
 import 'package:synapserx_prescriber/pages/user/useraccounts.dart';
 import 'package:synapserx_prescriber/pages/widgets/drawerbutton.dart';
 import 'package:synapserx_prescriber/pages/widgets/rxcustombutton.dart';
@@ -285,15 +286,29 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                                                     child: InkWell(
                                                       splashColor: const Color(
                                                           0xFF3B4257),
-                                                      onTap: () {},
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const SelectPatientsPage(
+                                                                          title:
+                                                                              'Select Patient',
+                                                                        )));
+                                                      },
                                                       child: Card(
                                                         elevation: 8,
                                                         child: Container(
                                                           margin:
                                                               const EdgeInsets
                                                                   .all(10),
-                                                          height: 70,
+                                                          height: 80,
                                                           child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .center,
@@ -308,23 +323,32 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                                                               const SizedBox(
                                                                 width: 20,
                                                               ),
-                                                              Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: const [
-                                                                  Text(
-                                                                      'Registered Patients',
-                                                                      style: TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.bold)),
-                                                                  Text(
-                                                                    'Choose this option for patients who are \nregistered on SynapseRx.You can select\nfrom your list or add them via their QR Code',
-                                                                  )
-                                                                ],
+                                                              Expanded(
+                                                                //flex: 1,
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: const <
+                                                                      Widget>[
+                                                                    Text(
+                                                                        'Registered Patients',
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold)),
+                                                                    Text(
+                                                                      'Choose this option for patients who are registered on SynapseRx.You can select from your list or add them via their QR Code',
+                                                                      softWrap:
+                                                                          true,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .visible,
+                                                                    )
+                                                                  ],
+                                                                ),
                                                               )
                                                             ],
                                                           ),

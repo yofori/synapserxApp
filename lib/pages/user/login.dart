@@ -33,15 +33,23 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
 
       if (res == 1) {
-        Navigator.pushReplacement(navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (context) => const HomePage()));
+        Navigator.pushReplacement(
+            navigatorKey.currentContext!,
+            MaterialPageRoute(
+                builder: (context) => const HomePage(
+                      showIndex: 0,
+                    )));
         scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
           content: const Text('login successful'),
           backgroundColor: Colors.green.shade300,
         ));
       } else if (res == 2) {
-        Navigator.pushReplacement(navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (context) => const HomePage()));
+        Navigator.pushReplacement(
+            navigatorKey.currentContext!,
+            MaterialPageRoute(
+                builder: (context) => const HomePage(
+                      showIndex: 0,
+                    )));
         scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
           content: Text('Server is unreachable. Offline authentication done'),
           backgroundColor: Color.fromARGB(255, 218, 152, 67),
