@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/tokens.dart';
+import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/models/useraccounts.dart';
@@ -46,8 +48,14 @@ class DioClient {
       if (response.statusCode == 200) {
         return Prescription.fromJson(response.data);
       }
-    } catch (e) {
-      throw e.toString();
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          "Error: $errorMessage",
+        ),
+      ));
     }
     return null;
   }
@@ -80,9 +88,6 @@ class DioClient {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
       throw e.toString();
     }
   }

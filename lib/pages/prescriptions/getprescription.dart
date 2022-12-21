@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/services.dart';
+import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/main.dart';
+import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/displayprescription.dart';
 
 class GetPrescriptionPage extends StatefulWidget {
@@ -15,6 +18,7 @@ class GetPrescriptionPage extends StatefulWidget {
 class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
   TextEditingController presciptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final DioClient _dioClient = DioClient();
   String _scanBarcode = 'Unknown';
   @override
   void initState() {
@@ -32,7 +36,7 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
       if (barcodeScanRes != '-1') {
         setState(() {
           _scanBarcode = barcodeScanRes;
-          getprescription();
+          getPrescription(_scanBarcode);
         });
       }
     } on PlatformException {
@@ -91,23 +95,6 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                       child: SizedBox(
                         width: 300,
                         child: Column(children: [
-                          // TextFormField(
-                          //   validator: (value) {
-                          //     if (value!.isEmpty) {
-                          //       return 'A Patient ID is required';
-                          //     }
-                          //     return null;
-                          //   },
-                          //   decoration: const InputDecoration(
-                          //       border: OutlineInputBorder(),
-                          //       prefixIcon: Icon(Icons.person),
-                          //       labelText: 'Patient ID',
-                          //       hintText: 'Enter Patient ID'),
-                          //   style: const TextStyle(
-                          //     color: Color(0xFF000000),
-                          //     fontWeight: FontWeight.w300,
-                          //   ),
-                          // ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -139,7 +126,7 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     _scanBarcode = presciptionController.text;
-                                    getprescription();
+                                    getPrescription(_scanBarcode);
                                   }
                                 },
                                 icon: const Icon(Icons.search),
@@ -183,13 +170,18 @@ class _GetPrescriptionPageState extends State<GetPrescriptionPage> {
         ));
   }
 
-  getprescription() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            DisplayPrescriptionPage(prescriptionid: _scanBarcode),
-      ),
-    );
+  getPrescription(String prescriptionId) async {
+    Prescription? prescription =
+        await _dioClient.getPrescription(prescriptionId);
+    if (prescription != null) {
+      if (!mounted) return;
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DisplayPrescriptionPage(
+                    prescriptionid: prescriptionId,
+                    prescription: prescription,
+                  )));
+    }
   }
 }
