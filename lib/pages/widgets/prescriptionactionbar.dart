@@ -86,9 +86,7 @@ class PrescriptionActionBarState extends State<PrescriptionActionBar> {
                                 pxSurname: '',
                                 isRenewal: false,
                               )));
-                  setState(() {
-                    widget.notifyParent(2);
-                  });
+                  widget.notifyParent(2);
                 }),
             const Text(
               'Edit ',
@@ -182,6 +180,12 @@ class PrescriptionActionBarState extends State<PrescriptionActionBar> {
                                 pxSurname: widget.prescription.pxSurname,
                                 isRenewal: true,
                               )));
+                  setState(() {
+                    widget.notifyParent(4);
+                    if (!mounted) {
+                      return;
+                    }
+                  });
                 },
                 /*onPressed: () async {
                         var renewedRx = await _dioClient.renewPrescription(

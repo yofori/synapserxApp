@@ -34,6 +34,9 @@ class _SelectMedicinesPageState extends State<SelectMedicinesPage> {
                 drugCode: drugCode,
                 drugName: drugName,
                 addingNewDrug: true,
+                allowRefill: false,
+                dispenseAsWritten: false,
+                maxRefillAllowed: 1,
               )),
     );
     if (!mounted) return;

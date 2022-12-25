@@ -4,19 +4,22 @@ import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/pages/widgets/customdropdown.dart';
 
 class AddEditDrugPage extends StatefulWidget {
-  const AddEditDrugPage(
-      {Key? key,
-      required this.addingNewDrug,
-      required this.title,
-      required this.drugName,
-      required this.drugCode,
-      this.drugDose,
-      this.doseUnits,
-      this.dosageRegimen,
-      this.duration,
-      this.durationUnits,
-      this.directionOfUse})
-      : super(key: key);
+  const AddEditDrugPage({
+    Key? key,
+    required this.addingNewDrug,
+    required this.title,
+    required this.drugName,
+    required this.drugCode,
+    this.drugDose,
+    this.doseUnits,
+    this.dosageRegimen,
+    this.duration,
+    this.durationUnits,
+    this.directionOfUse,
+    required this.maxRefillAllowed,
+    required this.dispenseAsWritten,
+    required this.allowRefill,
+  }) : super(key: key);
   final String drugName, drugCode, title;
   final String? drugDose,
       doseUnits,
@@ -25,6 +28,8 @@ class AddEditDrugPage extends StatefulWidget {
       durationUnits,
       directionOfUse;
   final bool addingNewDrug;
+  final int maxRefillAllowed;
+  final bool dispenseAsWritten, allowRefill;
   @override
   State<AddEditDrugPage> createState() => _AddEditDrugPageState();
 }
@@ -62,6 +67,12 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
     DosingFrequency(key: 'q12h', value: 'q12h - every 12 hours'),
   ];
 
+  List<RefillTimes> refillTimes = [
+    RefillTimes(key: 1, value: 'Once'),
+    RefillTimes(key: 2, value: 'Twice'),
+    RefillTimes(key: 3, value: 'Three times'),
+  ];
+
   final TextEditingController _doseController = TextEditingController();
   final TextEditingController _doseDuration = TextEditingController();
   final TextEditingController _directionOfUseController =
@@ -70,12 +81,18 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
   String _selectDoseUnits = '';
   String _selectDoseFrequency = '';
   String _selectedDurationUnit = '';
+  bool dispenseAsWritten = false;
+  bool allowRefill = false;
+  int maxRefillsAllowed = 1;
 
   @override
   void initState() {
     if (!widget.addingNewDrug) {
       _doseController.text = widget.drugDose!;
       _doseDuration.text = widget.duration!;
+      dispenseAsWritten = widget.dispenseAsWritten;
+      allowRefill = widget.allowRefill;
+      maxRefillsAllowed = widget.maxRefillAllowed;
       if (widget.directionOfUse != '') {
         _directionOfUseController.text = widget.directionOfUse ?? '';
       }
@@ -369,9 +386,68 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                     ),
                   ),
                 ]),
-                const SizedBox(
-                  height: 20,
-                ),
+                // const SizedBox(
+                //   height: 5,
+                // ),
+                Row(children: [
+                  Checkbox(
+                      value: dispenseAsWritten,
+                      onChanged: (value) {
+                        //value returned when checkbox is clicked
+                        setState(() {
+                          dispenseAsWritten = value!;
+                        });
+                      }),
+                  const Text('Dispense as Written'),
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: allowRefill,
+                      onChanged: (value) {
+                        //value returned when checkbox is clicked
+                        setState(() {
+                          allowRefill = value!;
+                        });
+                      }),
+                  const Text('Allow Refill: '),
+                  Container(
+                    width: 120,
+                    child: DropdownButtonFormField2(
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      value: widget.maxRefillAllowed,
+                      isDense: true,
+                      items: refillTimes
+                          .map((item) => DropdownMenuItem<int>(
+                                value: item.key,
+                                child: Text(
+                                  item.value,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: allowRefill
+                          ? (value) {
+                              //Do something when changing the item if you want.
+                            }
+                          : null,
+                      onSaved: allowRefill
+                          ? (value) {
+                              maxRefillsAllowed = int.parse(value.toString());
+                            }
+                          : (value) {
+                              maxRefillsAllowed = 1;
+                            },
+                    ),
+                  )
+                ]),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                   child: Container(
@@ -394,44 +470,54 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                           fontSize: 14,
                           height: 1.5,
                         ))),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          //primary: Colors.pink,
-                          fixedSize: const Size(double.maxFinite, 40),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      onPressed: () {
-                        var form = _formKey.currentState;
-                        if (_formKey.currentState!.validate()) {
-                          form!.save();
-                          Navigator.pop(context, {
-                            'DrugCode': widget.drugCode,
-                            'DrugName': widget.drugName,
-                            'DrugDose': _doseController.text,
-                            'DoseUnits': _selectDoseUnits,
-                            'DosageRegimen': _selectDoseFrequency,
-                            'Duration': _doseDuration.text,
-                            'DurationUnits': _selectedDurationUnit,
-                            'DirectionOfUse': _directionOfUseController.text,
-                          });
-                        }
-                      },
-                      child: const Text("Submit")),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          fixedSize: const Size(double.maxFinite, 40),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Cancel")),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              //fixedSize: const Size(double.maxFinite, 40),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5))),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel")),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              //primary: Colors.pink,
+                              //fixedSize: const Size(double.maxFinite, 40),
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5))),
+                          onPressed: () {
+                            var form = _formKey.currentState;
+                            if (_formKey.currentState!.validate()) {
+                              form!.save();
+                              Navigator.pop(context, {
+                                'DrugCode': widget.drugCode,
+                                'DrugName': widget.drugName,
+                                'DrugDose': _doseController.text,
+                                'DoseUnits': _selectDoseUnits,
+                                'DosageRegimen': _selectDoseFrequency,
+                                'Duration': _doseDuration.text,
+                                'DurationUnits': _selectedDurationUnit,
+                                'DirectionOfUse':
+                                    _directionOfUseController.text,
+                                'dispenseAsWritten': dispenseAsWritten,
+                                'allowRefills': allowRefill,
+                                'maxRefillsAllowed': maxRefillsAllowed,
+                              });
+                            }
+                          },
+                          child: const Text("Submit")),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -444,4 +530,10 @@ class DosingFrequency {
   String key;
   String value;
   DosingFrequency({required this.key, required this.value});
+}
+
+class RefillTimes {
+  int key;
+  String value;
+  RefillTimes({required this.key, required this.value});
 }

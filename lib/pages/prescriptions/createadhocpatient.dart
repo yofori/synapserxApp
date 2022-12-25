@@ -50,6 +50,7 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                   //   height: 10,
                   // ),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     controller: pxSurnameController,
                     validator: (val) {
                       if (val!.isEmpty) {
@@ -68,6 +69,7 @@ class CreateAdhocPxPageState extends State<CreateAdhocPxPage> {
                     height: 15,
                   ),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     controller: pxFirstnameController,
                     validator: (val) {
                       if (val!.isEmpty) {

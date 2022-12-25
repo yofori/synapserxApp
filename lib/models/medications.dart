@@ -11,7 +11,7 @@ class Medications {
   String? duration;
   String? durationUnits;
   String? status;
-  bool? despenseAsWritten;
+  bool? dispenseAsWritten;
   bool? allowRefills;
   int? maxRefillsAllowed;
   @JsonKey(name: '_id')
@@ -30,7 +30,7 @@ class Medications {
       this.directionOfUse,
       this.dosageUnits,
       this.allowRefills,
-      this.despenseAsWritten,
+      this.dispenseAsWritten,
       this.maxRefillsAllowed});
 
   factory Medications.fromJson(Map<String, dynamic> json) =>

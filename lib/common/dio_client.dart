@@ -156,7 +156,6 @@ class DioClient {
       String? prescriptionBeingRenewed,
       required String pxGender}) async {
     try {
-      //_dio.options.headers['Authorization'] = GlobalData.accessToken;
       Response response = await _dio.post(
         '/prescription/create',
         data: {

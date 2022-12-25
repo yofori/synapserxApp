@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -278,6 +279,18 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
                                                                       prescribedMedicines[
                                                                               index]
                                                                           .directionOfUse,
+                                                                  dispenseAsWritten:
+                                                                      prescribedMedicines[
+                                                                              index]
+                                                                          .dispenseAsWritten,
+                                                                  allowRefill:
+                                                                      prescribedMedicines[
+                                                                              index]
+                                                                          .allowRefills,
+                                                                  maxRefillAllowed:
+                                                                      prescribedMedicines[
+                                                                              index]
+                                                                          .maxRefillsAllowed,
                                                                 ))).then(
                                                     (value) {
                                                   if (value != null) {
@@ -334,6 +347,9 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         durationUnits: value['DurationUnits'],
         directionOfUse: value['DirectionOfUse'],
         id: (prescribedMedicines.length + 1).toString(),
+        allowRefills: value['allowRefills'],
+        dispenseAsWritten: value['dispenseAsWritten'],
+        maxRefillsAllowed: value['maxRefillsAllowed'],
       ));
       //enable save button
       isSaveButtonDisabled = false;
@@ -350,6 +366,9 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       prescribedMedicines[index].duration = value['Duration'];
       prescribedMedicines[index].durationUnits = value['DurationUnits'];
       prescribedMedicines[index].directionOfUse = value['DirectionOfUse'];
+      prescribedMedicines[index].allowRefills = value['allowRefills'];
+      prescribedMedicines[index].dispenseAsWritten = value['dispenseAsWritten'];
+      prescribedMedicines[index].maxRefillsAllowed = value['maxRefillsAllowed'];
       //enable the save button
       isSaveButtonDisabled = false;
     });
@@ -369,6 +388,9 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         "directionOfUse": e.directionOfUse,
         "dosageUnits": e.dosageUnits,
         "dosageRegimen": e.dosageRegimen,
+        "allowRefills": e.allowRefills,
+        "dispenseAsWritten": e.dispenseAsWritten,
+        "maxRefillsAllowed": e.maxRefillsAllowed
       };
     })).toList();
     List medicines = prescribedMedicinesMap.toList();
@@ -420,6 +442,9 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         "directionOfUse": e.directionOfUse,
         "dosageUnits": e.dosageUnits,
         "dosageRegimen": e.dosageRegimen,
+        "allowRefills": e.allowRefills,
+        "dispenseAsWritten": e.dispenseAsWritten,
+        "maxRefillsAllowed": e.maxRefillsAllowed
       };
     })).toList();
     List medicines = prescribedMedicinesMap.toList();
@@ -456,7 +481,9 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       //           else
       //             {Navigator.pushNamed(context, '/home')}
       //         });
-      afterSaveOption(prescription).then((_) => {
+
+      Prescription createdPrescription = Prescription.fromJson(prescription);
+      afterSaveOption(createdPrescription).then((_) => {
             if (widget.isRegistered)
               {Navigator.pop(navigatorKey.currentContext!)}
             else
@@ -473,7 +500,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     }
   }
 
-  Future<dynamic> afterSaveOption(Prescription prescription) {
+  afterSaveOption(Prescription prescription) {
     return showModalBottomSheet(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))),
@@ -501,7 +528,10 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
                 Container(
                   height: 40,
                   alignment: Alignment.center,
-                  child: const Text('What would you like to do?'),
+                  child: const Text(
+                    'What would you like to do?',
+                    textScaleFactor: 1.2,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -511,8 +541,50 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
                       leading: const Icon(Icons.edit),
                       trailing: const Icon(CupertinoIcons.chevron_forward),
                       title: const Text('Edit Prescription'),
-                      onTap: () {},
+                      onTap: () async {
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditPrescriptionPage(
+                                      title: 'Edit Prescription',
+                                      prescriptionID:
+                                          prescription.sId.toString(),
+                                      isEditting: true,
+                                      patientID: prescription.pxId.toString(),
+                                      patientName:
+                                          '${prescription.pxFirstname} ${prescription.pxSurname}',
+                                      pxAge: prescription.pxAge.toString(),
+                                      pxGender: prescription.pxgender,
+                                      isRegistered: true,
+                                      pxDOB: '',
+                                      pxFirstname: '',
+                                      pxSurname: '',
+                                      isRenewal: false,
+                                    ))).whenComplete(
+                            () => Navigator.pop(context));
+                      },
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: Card(
+                    elevation: 8,
+                    child: ListTile(
+                        leading: const SizedBox(
+                            height: double.infinity, child: Icon(Icons.share)),
+                        trailing: const Icon(CupertinoIcons.chevron_forward),
+                        title: const Text('Share Prescription'),
+                        subtitle:
+                            const Text('via WhatsApp, Telegram, Email, etc'),
+                        onTap: () async {
+                          final pdfFile =
+                              await pdfgen.PdfPrescriptionApi.generate(
+                                  prescription);
+                          PdfApi.sharePDF(
+                                  scaffoldMessengerKey.currentContext!, pdfFile)
+                              .whenComplete(() => Navigator.pop(context));
+                        }),
                   ),
                 ),
                 Padding(
@@ -520,19 +592,24 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
                   child: Card(
                     elevation: 8,
                     child: ListTile(
-                        leading: const Icon(Icons.share),
+                        leading: const Icon(Icons.picture_as_pdf),
                         trailing: const Icon(CupertinoIcons.chevron_forward),
-                        title: const Text('Share Prescription'),
+                        title: const Text('View Prescription (PDF)'),
                         onTap: () async {
                           final pdfFile =
                               await pdfgen.PdfPrescriptionApi.generate(
                                   prescription);
-                          // ignore: use_build_context_synchronously
-                          PdfApi.sharePDF(context, pdfFile);
-                          //PdfApi.openFile(pdfFile);
+                          PdfApi.openFile(pdfFile)
+                              .whenComplete(() => Navigator.pop(context));
                         }),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+                  child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Dismiss', textScaleFactor: 1.2)),
+                )
               ]));
         });
   }
@@ -550,16 +627,24 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       }
       retrievedMedicines = prescription.medications!.toList(growable: true);
       for (var element in retrievedMedicines) {
-        debugPrint(element.sId.toString());
         prescribedMedicines.add(RxMedicines(
-            id: element.sId,
-            dosageRegimen: element.dosageRegimen,
-            drugCode: element.drugCode,
-            drugName: element.drugName,
-            drugDose: element.dose,
-            duration: element.duration,
-            durationUnits: element.durationUnits,
-            dosageUnits: element.dosageUnits));
+          id: element.sId,
+          dosageRegimen: element.dosageRegimen,
+          drugCode: element.drugCode,
+          drugName: element.drugName,
+          drugDose: element.dose,
+          duration: element.duration,
+          durationUnits: element.durationUnits,
+          dosageUnits: element.dosageUnits,
+          allowRefills:
+              (element.allowRefills == null) ? false : element.allowRefills,
+          dispenseAsWritten: (element.dispenseAsWritten == null)
+              ? false
+              : element.dispenseAsWritten,
+          maxRefillsAllowed: (element.maxRefillsAllowed == null)
+              ? 1
+              : element.maxRefillsAllowed,
+        ));
       }
     }
     setState(() {
@@ -577,18 +662,22 @@ class RxMedicines {
       duration,
       durationUnits,
       dosageUnits;
+  bool dispenseAsWritten, allowRefills;
+  int maxRefillsAllowed;
   String? directionOfUse;
-  RxMedicines({
-    required this.id,
-    required this.dosageRegimen,
-    required this.drugCode,
-    required this.drugName,
-    required this.drugDose,
-    required this.duration,
-    required this.durationUnits,
-    this.directionOfUse,
-    required this.dosageUnits,
-  });
+  RxMedicines(
+      {required this.id,
+      required this.dosageRegimen,
+      required this.drugCode,
+      required this.drugName,
+      required this.drugDose,
+      required this.duration,
+      required this.durationUnits,
+      this.directionOfUse,
+      required this.dosageUnits,
+      required this.allowRefills,
+      required this.dispenseAsWritten,
+      required this.maxRefillsAllowed});
 }
 
 class UserAccounts {
