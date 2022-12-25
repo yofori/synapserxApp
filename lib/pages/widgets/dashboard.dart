@@ -68,7 +68,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
           ),
           title: const Text('SynapseRx'),
         ),
-        drawer: const RxDrawer(),
+        drawer: RxDrawer(onGoBack: () {
+          setState(() {});
+        }),
         body: SingleChildScrollView(
           child: Column(children: [
             const SizedBox(

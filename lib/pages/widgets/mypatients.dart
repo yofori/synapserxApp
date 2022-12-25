@@ -45,7 +45,9 @@ class _PatientsPageState extends State<PatientsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const RxDrawer(),
+      drawer: RxDrawer(onGoBack: () {
+        setState(() {});
+      }),
       appBar: AppBar(
           leading: DrawerButton(key: _skey),
           title: !_searchBoolean

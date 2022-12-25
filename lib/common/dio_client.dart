@@ -2,12 +2,10 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';
 import 'package:synapserx_prescriber/common/logging.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/tokens.dart';
-import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:synapserx_prescriber/models/useraccounts.dart';
@@ -48,14 +46,8 @@ class DioClient {
       if (response.statusCode == 200) {
         return Prescription.fromJson(response.data);
       }
-    } on DioError catch (err) {
-      final errorMessage = DioException.fromDioError(err).toString();
-      scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Error: $errorMessage",
-        ),
-      ));
+    } catch (e) {
+      throw e.toString();
     }
     return null;
   }
@@ -88,6 +80,9 @@ class DioClient {
       final errorMessage = DioException.fromDioError(err).toString();
       throw errorMessage;
     } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
       throw e.toString();
     }
   }
@@ -157,6 +152,8 @@ class DioClient {
       required String prescriberAccount,
       String? pxEmail,
       String? pxTelephone,
+      required bool isRenewal,
+      String? prescriptionBeingRenewed,
       required String pxGender}) async {
     try {
       //_dio.options.headers['Authorization'] = GlobalData.accessToken;
@@ -173,7 +170,10 @@ class DioClient {
           'pxTelephone': pxTelephone,
           'pxgender': pxGender,
           'isPxRegistered': isRegistered,
-          'prescriberInstitution': prescriberAccount
+          'prescriberInstitution': prescriberAccount,
+          'isRenewal': isRenewal,
+          'prescriptionBeingRenewed':
+              isRenewal ? prescriptionBeingRenewed : null,
         },
       );
       if (response.statusCode == 201) {
@@ -215,19 +215,36 @@ class DioClient {
     return null;
   }
 
-  Future<bool> addUserAccount({required UserAccount useraccount}) async {
+  Future<dynamic> renewPrescription({
+    required String prescriptionID,
+  }) async {
+    try {
+      Response response =
+          await _dio.post('/prescription/renew/$prescriptionID');
+      if (response.statusCode == 201) {
+        return response.data;
+      }
+    } on DioError catch (err) {
+      if (err.error.statusCode == 404) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  Future<dynamic> addUserAccount({required UserAccount useraccount}) async {
     try {
       Response response = await _dio.post(
           '/user/addinstitution/${GlobalData.prescriberid}',
           data: useraccount.toJson());
       if (response.statusCode == 201) {
-        return true;
+        return response.data;
       }
     } on DioError catch (err) {
       log(err.message);
-      return false;
+      return null;
     }
-    return false;
+    return null;
   }
 
   Future<bool> deleteUserAccount(String accountid) async {

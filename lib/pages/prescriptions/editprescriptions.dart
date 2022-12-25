@@ -1,14 +1,19 @@
 import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
+import 'package:synapserx_prescriber/common/pdf_api.dart';
 import 'package:synapserx_prescriber/common/service.dart';
 import 'package:synapserx_prescriber/common/stringutils.dart';
 import 'package:synapserx_prescriber/main.dart';
+import 'package:synapserx_prescriber/models/prescription.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/selectmedicine.dart';
+import 'package:synapserx_prescriber/common/pdf_prescription_api.dart'
+    as pdfgen;
 
 class EditPrescriptionPage extends StatefulWidget {
   const EditPrescriptionPage(
@@ -25,11 +30,13 @@ class EditPrescriptionPage extends StatefulWidget {
       required this.pxSurname,
       this.pxEmail,
       this.pxTelephone,
-      required this.isRegistered})
+      required this.isRegistered,
+      required this.isRenewal})
       : super(key: key);
   final String prescriptionID;
   final String patientID;
   final bool isEditting;
+  final bool isRenewal;
   final bool isRegistered;
   final String title;
   final String patientName;
@@ -60,6 +67,11 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     super.initState();
     if (widget.isEditting) {
       getPrescription();
+    } else {
+      if (widget.isRenewal) {
+        getPrescription();
+        isSaveButtonDisabled = false;
+      }
     }
     getUserAccounts();
   }
@@ -411,7 +423,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       };
     })).toList();
     List medicines = prescribedMedicinesMap.toList();
-    log(prescriberAccount);
+    //log(prescriberAccount);
     dynamic prescription = await _dioClient.createPrescription(
         patientID: widget.patientID,
         medicines: medicines,
@@ -423,23 +435,33 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         isRegistered: widget.isRegistered,
         pxEmail: widget.pxEmail,
         pxTelephone: widget.pxTelephone,
-        prescriberAccount: prescriberAccount);
+        prescriberAccount: prescriberAccount,
+        //add changes to prescription if it is a renewal
+        isRenewal: widget.isRenewal,
+        prescriptionBeingRenewed: widget.prescriptionID);
+
     if (prescription != null) {
-      scaffoldMessengerKey.currentState!
-          .showSnackBar(const SnackBar(
-            duration: Duration(seconds: 2),
-            backgroundColor: Colors.green,
-            content: Text(
-              "New Prescription Successfully Created",
-            ),
-          ))
-          .closed
-          .then((_) => {
-                if (widget.isRegistered)
-                  {Navigator.pop(navigatorKey.currentContext!)}
-                else
-                  {Navigator.pushNamed(context, '/home')}
-              });
+      // scaffoldMessengerKey.currentState!
+      //     .showSnackBar(const SnackBar(
+      //       duration: Duration(seconds: 2),
+      //       backgroundColor: Colors.green,
+      //       content: Text(
+      //         "New Prescription Successfully Created",
+      //       ),
+      //     ))
+      //     .closed
+      //     .then((_) => {
+      //           if (widget.isRegistered)
+      //             {Navigator.pop(navigatorKey.currentContext!)}
+      //           else
+      //             {Navigator.pushNamed(context, '/home')}
+      //         });
+      afterSaveOption(prescription).then((_) => {
+            if (widget.isRegistered)
+              {Navigator.pop(navigatorKey.currentContext!)}
+            else
+              {Navigator.pushNamed(context, '/home')}
+          });
     } else {
       scaffoldMessengerKey.currentState!.showSnackBar(const SnackBar(
         duration: Duration(seconds: 2),
@@ -449,6 +471,70 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         ),
       ));
     }
+  }
+
+  Future<dynamic> afterSaveOption(Prescription prescription) {
+    return showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))),
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        border: Border.all(color: Colors.green),
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10.0),
+                            topLeft: Radius.circular(10.0))),
+                    child: const Text(
+                      'Prescription Created Sucessfully',
+                      textScaleFactor: 1,
+                      style: TextStyle(color: Colors.white),
+                    )),
+                Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  child: const Text('What would you like to do?'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 8,
+                    child: ListTile(
+                      leading: const Icon(Icons.edit),
+                      trailing: const Icon(CupertinoIcons.chevron_forward),
+                      title: const Text('Edit Prescription'),
+                      onTap: () {},
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+                  child: Card(
+                    elevation: 8,
+                    child: ListTile(
+                        leading: const Icon(Icons.share),
+                        trailing: const Icon(CupertinoIcons.chevron_forward),
+                        title: const Text('Share Prescription'),
+                        onTap: () async {
+                          final pdfFile =
+                              await pdfgen.PdfPrescriptionApi.generate(
+                                  prescription);
+                          // ignore: use_build_context_synchronously
+                          PdfApi.sharePDF(context, pdfFile);
+                          //PdfApi.openFile(pdfFile);
+                        }),
+                  ),
+                ),
+              ]));
+        });
   }
 
   getPrescription() async {

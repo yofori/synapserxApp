@@ -4,6 +4,7 @@ import 'package:synapserx_prescriber/common/dio_client.dart';
 import 'package:synapserx_prescriber/common/stringutils.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/homepage.dart';
+import 'package:synapserx_prescriber/pages/patients/addassociations.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/editprescriptions.dart';
 
 // ignore: must_be_immutable
@@ -45,6 +46,13 @@ class _SelectPatientsPageState extends State<SelectPatientsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add Patient',
+        child: const Icon(Icons.person_add),
+        onPressed: () {
+          navigateToAddAssociation();
+        },
+      ),
       appBar: AppBar(
           title: !_searchBoolean
               ? Text(widget.title)
@@ -153,6 +161,7 @@ class _SelectPatientsPageState extends State<SelectPatientsPage> {
                                                 pxGender: pxGender,
                                                 pxSurname: '',
                                                 title: 'Create Prescription',
+                                                isRenewal: false,
                                               ))).whenComplete(() =>
                                       Navigator.push(
                                           context,
@@ -231,6 +240,17 @@ class _SelectPatientsPageState extends State<SelectPatientsPage> {
     setState(() {
       pxAge = calculateAge(patient.dateOfBirth!);
       pxGender = patient.gender!.toUpperCase();
+    });
+  }
+
+  void navigateToAddAssociation() async {
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => const AddAssociationsPage()))
+        .whenComplete(() {
+      setState(() {
+        associations = fetchAssociations();
+      });
     });
   }
 }

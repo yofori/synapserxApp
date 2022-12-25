@@ -55,6 +55,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                           isRegistered: true,
                           pxFirstname: '',
                           pxSurname: '',
+                          isRenewal: false,
                         )));
             setState(() {});
           },
@@ -106,7 +107,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
                   }
                   return RefreshIndicator(
                     onRefresh: () async {
-                      _refresh();
+                      _refresh(1);
                     },
                     child: ListView.separated(
                       key: _key,
@@ -174,7 +175,7 @@ class _PatientPrescriptionsPageState extends State<PatientPrescriptionsPage> {
     );
   }
 
-  Future<void> _refresh() async {
+  Future<void> _refresh(int action) async {
     if (mounted) {
       _key = GlobalKey();
       setState(() {});

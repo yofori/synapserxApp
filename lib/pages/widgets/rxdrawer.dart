@@ -9,7 +9,8 @@ import 'package:synapserx_prescriber/pages/user/changepassword.dart';
 import 'package:synapserx_prescriber/pages/user/useraccounts.dart';
 
 class RxDrawer extends StatelessWidget {
-  const RxDrawer({super.key});
+  const RxDrawer({super.key, required this.onGoBack});
+  final Function onGoBack;
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +66,13 @@ class RxDrawer extends StatelessWidget {
                     color: Colors.red,
                   )
                 : null,
-            onTap: () {
+            onTap: () async {
               Navigator.pop(context);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const UserAccountsPage()));
+              await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserAccountsPage()))
+                  .then((value) => onGoBack);
             },
           ),
           ListTile(

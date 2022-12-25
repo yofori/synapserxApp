@@ -292,7 +292,6 @@ class UserAccountsPageState extends State<UserAccountsPage> {
   }
 
   Future<void> addUserAcount() async {
-    bool outcome;
     UserAccount useraccount = UserAccount(
       defaultAccount: GlobalData.defaultAccount.isEmpty,
       institutionName: institutionName.text,
@@ -301,12 +300,16 @@ class UserAccountsPageState extends State<UserAccountsPage> {
       institutionTelephone: institutionTelephone.text,
     );
 
-    outcome = await _dioClient.addUserAccount(useraccount: useraccount);
-    if (outcome) {
+    var outcome = await _dioClient.addUserAccount(useraccount: useraccount);
+    if (outcome != null) {
       Navigator.pop(navigatorKey.currentContext!);
-      setState(() {
-        useraccounts = fetchUserAccounts();
-      });
+      useraccounts = fetchUserAccounts();
+
+      //get the default account from which the prescriber prescribes from if it has been set. It will bypass if it is the firt time
+      if (GlobalData.defaultAccount.isEmpty) {
+        GlobalData.defaultAccount = outcome['_id'];
+      }
+      setState(() {});
     }
   }
 

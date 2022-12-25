@@ -35,9 +35,13 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
               height: 85, //set your height here
               width: double.maxFinite, //set your width here
               child: PrescriptionActionBar(
-                  prescription: widget.prescription,
-                  notifyParent: () async {
-                    await refreshPrescription(widget.prescriptionid);
+                  prescription: retrievedPrescription,
+                  notifyParent: (i) async {
+                    if (i == 3) {
+                      Navigator.pop(context);
+                    } else {
+                      await refreshPrescription(widget.prescriptionid);
+                    }
                     setState(() {});
                   })),
         ),
@@ -216,6 +220,7 @@ class _DisplayPrescriptionPageState extends State<DisplayPrescriptionPage> {
     return SizedBox(
       width: width,
       child: DataTable(
+          //headingTextStyle: const TextStyle(color: Colors.white, fontSize: 14),
           showBottomBorder: true,
           headingRowHeight: 30,
           headingRowColor:

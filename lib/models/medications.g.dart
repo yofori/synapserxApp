@@ -17,6 +17,9 @@ Medications _$MedicationsFromJson(Map<String, dynamic> json) => Medications(
       sId: json['_id'] as String?,
       directionOfUse: json['directionOfUse'] as String?,
       dosageUnits: json['dosageUnits'] as String?,
+      allowRefills: json['allowRefills'] as bool?,
+      despenseAsWritten: json['despenseAsWritten'] as bool?,
+      maxRefillsAllowed: json['maxRefillsAllowed'] as int?,
     );
 
 Map<String, dynamic> _$MedicationsToJson(Medications instance) =>
@@ -29,6 +32,9 @@ Map<String, dynamic> _$MedicationsToJson(Medications instance) =>
       'duration': instance.duration,
       'durationUnits': instance.durationUnits,
       'status': instance.status,
+      'despenseAsWritten': instance.despenseAsWritten,
+      'allowRefills': instance.allowRefills,
+      'maxRefillsAllowed': instance.maxRefillsAllowed,
       '_id': instance.sId,
       'directionOfUse': instance.directionOfUse,
     };

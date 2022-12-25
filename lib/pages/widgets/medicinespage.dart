@@ -80,7 +80,9 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-            drawer: const RxDrawer(),
+            drawer: RxDrawer(onGoBack: () {
+              setState(() {});
+            }),
             appBar: AppBar(
                 leading: DrawerButton(key: _skey),
                 title: !_searchBoolean

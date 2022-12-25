@@ -36,7 +36,9 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const RxDrawer(),
+      drawer: RxDrawer(onGoBack: () {
+        setState(() {});
+      }),
       appBar: AppBar(
           leading: DrawerButton(key: _skey),
           title: !_searchBoolean
@@ -97,7 +99,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 ]),
       body: RefreshIndicator(
         onRefresh: () async {
-          _refresh();
+          _refresh(1);
         },
         child: Column(
           key: _key,
@@ -200,7 +202,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
     return response;
   }
 
-  Future<void> _refresh() async {
+  Future<void> _refresh(int action) async {
     if (mounted) {
       _key = GlobalKey();
       setState(() {
