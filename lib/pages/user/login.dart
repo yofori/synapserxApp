@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synapserx_prescriber/common/awesome_notification_service.dart';
 import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/pages/user/register.dart';
 import 'package:synapserx_prescriber/common/auth.dart';
@@ -20,6 +21,11 @@ class _LoginPageState extends State<LoginPage> {
   final DioClient _dioClient = DioClient();
   bool _showPassword = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> login() async {
     if (_formKey.currentState!.validate()) {
@@ -43,6 +49,10 @@ class _LoginPageState extends State<LoginPage> {
           content: const Text('login successful'),
           backgroundColor: Colors.green.shade300,
         ));
+        // code to send token to server is executed here
+        NotificationController.startListeningNotificationEvents();
+        await NotificationController.requestFirebaseToken()
+            .then((value) => {_dioClient.updateFCMToken(fcmtoken: value)});
       } else if (res == 2) {
         Navigator.pushReplacement(
             navigatorKey.currentContext!,

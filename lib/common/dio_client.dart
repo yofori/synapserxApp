@@ -1,5 +1,6 @@
 import 'dart:developer';
-
+import 'dart:io';
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:synapserx_prescriber/common/dio_exception.dart';

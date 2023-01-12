@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "727246042151",
+    "project_id": "synapserx-b05c7",
+    "storage_bucket": "synapserx-b05c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727246042151:android:ad66b00170c5be02758a02",
+        "android_client_info": {
+          "package_name": "com.example.synapserx_prescriber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "727246042151-5uuqq3a8rfgodg5pmo0hrmp4gmkna1il.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk_jcFvHC5V749hGm5zSLpyXFWBwUYto0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "727246042151-5uuqq3a8rfgodg5pmo0hrmp4gmkna1il.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

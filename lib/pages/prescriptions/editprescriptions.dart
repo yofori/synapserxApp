@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -258,6 +257,10 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
                                                                   drugName: prescribedMedicines[
                                                                           index]
                                                                       .drugName,
+                                                                  drugGenericName:
+                                                                      prescribedMedicines[
+                                                                              index]
+                                                                          .drugGenericName,
                                                                   drugDose: prescribedMedicines[
                                                                           index]
                                                                       .drugDose,
@@ -340,6 +343,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       prescribedMedicines.add(RxMedicines(
         drugCode: value['DrugCode'],
         drugName: value['DrugName'],
+        drugGenericName: value['DrugGenericName'],
         drugDose: value['DrugDose'],
         dosageRegimen: value['DosageRegimen'],
         dosageUnits: value['DoseUnits'],
@@ -360,6 +364,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
     setState(() {
       prescribedMedicines[index].drugCode = value['DrugCode'];
       prescribedMedicines[index].drugName = value['DrugName'];
+      prescribedMedicines[index].drugGenericName = value['DrugGenericName'];
       prescribedMedicines[index].drugDose = value['DrugDose'];
       prescribedMedicines[index].dosageRegimen = value['DosageRegimen'];
       prescribedMedicines[index].dosageUnits = value['DoseUnits'];
@@ -382,6 +387,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       return {
         "drugCode": e.drugCode,
         "drugName": e.drugName,
+        "drugGenericName": e.drugGenericName,
         "dose": e.drugDose,
         "duration": e.duration,
         "durationUnits": e.durationUnits,
@@ -436,6 +442,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
       return {
         "drugCode": e.drugCode,
         "drugName": e.drugName,
+        "drugGenericName": e.drugGenericName,
         "dose": e.drugDose,
         "duration": e.duration,
         "durationUnits": e.durationUnits,
@@ -466,22 +473,6 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
         prescriptionBeingRenewed: widget.prescriptionID);
 
     if (prescription != null) {
-      // scaffoldMessengerKey.currentState!
-      //     .showSnackBar(const SnackBar(
-      //       duration: Duration(seconds: 2),
-      //       backgroundColor: Colors.green,
-      //       content: Text(
-      //         "New Prescription Successfully Created",
-      //       ),
-      //     ))
-      //     .closed
-      //     .then((_) => {
-      //           if (widget.isRegistered)
-      //             {Navigator.pop(navigatorKey.currentContext!)}
-      //           else
-      //             {Navigator.pushNamed(context, '/home')}
-      //         });
-
       Prescription createdPrescription = Prescription.fromJson(prescription);
       afterSaveOption(createdPrescription).then((_) => {
             if (widget.isRegistered)
@@ -632,6 +623,7 @@ class _EditPrescriptionPageState extends State<EditPrescriptionPage> {
           dosageRegimen: element.dosageRegimen,
           drugCode: element.drugCode,
           drugName: element.drugName,
+          drugGenericName: element.drugGenericName,
           drugDose: element.dose,
           duration: element.duration,
           durationUnits: element.durationUnits,
@@ -664,7 +656,7 @@ class RxMedicines {
       dosageUnits;
   bool dispenseAsWritten, allowRefills;
   int maxRefillsAllowed;
-  String? directionOfUse;
+  String? directionOfUse, drugGenericName;
   RxMedicines(
       {required this.id,
       required this.dosageRegimen,
@@ -674,6 +666,7 @@ class RxMedicines {
       required this.duration,
       required this.durationUnits,
       this.directionOfUse,
+      this.drugGenericName,
       required this.dosageUnits,
       required this.allowRefills,
       required this.dispenseAsWritten,

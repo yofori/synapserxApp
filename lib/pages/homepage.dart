@@ -18,11 +18,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  String fibrebaseToken = '';
+  //PushNotificationService pushnotification = PushNotificationService();
 
   @override
   void initState() {
-    super.initState();
     _selectedIndex = widget.showIndex;
+    super.initState();
   }
 
   final List _screens = [

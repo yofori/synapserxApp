@@ -30,8 +30,9 @@ class _MedicineListState extends State<MedicinesList> {
     });
   }
 
-  void _handleTap(String drugCode, drugName) {
-    widget.onTap('{"drugCode":"$drugCode","drugName":"$drugName"}');
+  void _handleTap(String drugCode, drugName, drugGenericName) {
+    widget.onTap(
+        '{"drugCode":"$drugCode","drugName":"$drugName","drugGenericName":"$drugGenericName"}');
   }
 
   void filterSearch(String query) async {
@@ -90,14 +91,15 @@ class _MedicineListState extends State<MedicinesList> {
                               child: ListTile(
                                 onTap: (() {
                                   setState(() {
-                                    _handleTap(filteredMedicines[index].code,
-                                        filteredMedicines[index].brandName);
+                                    _handleTap(
+                                        filteredMedicines[index].code,
+                                        filteredMedicines[index].brandName,
+                                        filteredMedicines[index].genericName);
                                   });
                                 }),
-                                title:
-                                    Text(filteredMedicines[index].genericName),
+                                title: Text(filteredMedicines[index].brandName),
                                 subtitle:
-                                    Text(filteredMedicines[index].brandName),
+                                    Text(filteredMedicines[index].genericName),
                               ),
                             );
                           }),

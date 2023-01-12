@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/services.dart';
 import 'package:synapserx_prescriber/common/dio_client.dart';
-import 'package:synapserx_prescriber/main.dart';
 import 'package:synapserx_prescriber/models/models.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/displayprescription.dart';
 

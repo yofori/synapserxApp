@@ -5,6 +5,7 @@ part 'medications.g.dart';
 class Medications {
   String drugCode;
   String? drugName;
+  String? drugGenericName;
   String? dose;
   String? dosageUnits;
   String? dosageRegimen;
@@ -21,6 +22,7 @@ class Medications {
   Medications(
       {required this.drugCode,
       this.drugName,
+      this.drugGenericName,
       this.duration,
       this.dose,
       this.dosageRegimen,

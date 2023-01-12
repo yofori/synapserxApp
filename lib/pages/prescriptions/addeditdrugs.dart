@@ -10,6 +10,7 @@ class AddEditDrugPage extends StatefulWidget {
     required this.title,
     required this.drugName,
     required this.drugCode,
+    this.drugGenericName,
     this.drugDose,
     this.doseUnits,
     this.dosageRegimen,
@@ -26,7 +27,8 @@ class AddEditDrugPage extends StatefulWidget {
       dosageRegimen,
       duration,
       durationUnits,
-      directionOfUse;
+      directionOfUse,
+      drugGenericName;
   final bool addingNewDrug;
   final int maxRefillAllowed;
   final bool dispenseAsWritten, allowRefill;
@@ -120,7 +122,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                   child: Align(
                     alignment: Alignment.center,
                     child: SizedBox(
-                        height: 50,
+                        //height: 50,
                         width: double.infinity,
                         child: Text(
                           widget.drugName,
@@ -129,6 +131,18 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                               fontWeight: FontWeight.bold, fontSize: 20),
                         )),
                   ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      //height: 50,
+                      width: double.infinity,
+                      child: Text(
+                        widget.drugGenericName.toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 14),
+                      )),
                 ),
                 Row(
                   children: [
@@ -410,7 +424,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                         });
                       }),
                   const Text('Allow Refill: '),
-                  Container(
+                  SizedBox(
                     width: 120,
                     child: DropdownButtonFormField2(
                       decoration: InputDecoration(
@@ -502,6 +516,7 @@ class _AddEditDrugPageState extends State<AddEditDrugPage> {
                               Navigator.pop(context, {
                                 'DrugCode': widget.drugCode,
                                 'DrugName': widget.drugName,
+                                'DrugGenericName': widget.drugGenericName,
                                 'DrugDose': _doseController.text,
                                 'DoseUnits': _selectDoseUnits,
                                 'DosageRegimen': _selectDoseFrequency,

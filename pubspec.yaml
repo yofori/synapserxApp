@@ -57,6 +57,15 @@ dependencies:
   icofont_flutter: ^1.4.0
   badges: ^2.0.3
   carousel_slider: ^4.2.1
+  firebase_messaging: ^14.2.0
+  firebase_core: ^2.4.0
+  overlay_support: ^2.1.0
+  flutter_local_notifications: ^12.0.4
+  awesome_notifications: ^0.7.4+1
+  awesome_notifications_fcm: ^0.7.4+1
+  http: ^0.13.5
+  fluttertoast: ^8.1.2
+  device_info: ^2.0.3
 
 dev_dependencies:
   flutter_test:

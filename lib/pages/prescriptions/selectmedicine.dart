@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:synapserx_prescriber/pages/prescriptions/addeditdrugs.dart';
-//import 'package:synapserx_prescriber/pages/widgets/addeditdrugs.dart';
 import 'package:synapserx_prescriber/pages/widgets/medicineslist.dart';
 
 class SelectMedicinesPage extends StatefulWidget {
@@ -15,12 +14,14 @@ class SelectMedicinesPage extends StatefulWidget {
 class _SelectMedicinesPageState extends State<SelectMedicinesPage> {
   String drugName = '';
   String drugCode = '';
+  String drugGenericName = '';
   @override
   Widget build(BuildContext context) {
     return MedicinesList(onTap: (value) {
       Map<String, dynamic> map = jsonDecode(value);
       drugCode = map["drugCode"].toString();
       drugName = map["drugName"].toString();
+      drugGenericName = map["drugGenericName"].toString();
       _navigateAndDisplayAddEditDrug(context);
     });
   }
@@ -33,6 +34,7 @@ class _SelectMedicinesPageState extends State<SelectMedicinesPage> {
                 title: 'Adding Drug',
                 drugCode: drugCode,
                 drugName: drugName,
+                drugGenericName: drugGenericName,
                 addingNewDrug: true,
                 allowRefill: false,
                 dispenseAsWritten: false,

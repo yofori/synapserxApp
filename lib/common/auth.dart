@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -154,5 +156,37 @@ class DioClient {
     await storage.write(key: "prescriberid", value: prescriberid);
     await storage.write(
         key: "defaultAccount", value: GlobalData.defaultAccount);
+  }
+
+  Future<void> updateFCMToken({required String fcmtoken}) async {
+    String? deviceid = await _getId();
+    try {
+      Response response = await _dio.post(
+        '/user/updatetoken/$fcmtoken',
+        data: {
+          "userid": GlobalData.prescriberid,
+          "deviceid": deviceid,
+          "platform": Platform.isIOS ? "ios" : "android",
+        },
+      );
+      if (response.statusCode == 200) {
+        log("fcmtoken updated");
+      }
+    } on DioError catch (err) {
+      final errorMessage = DioException.fromDioError(err).toString();
+      log(errorMessage);
+    }
+  }
+
+  Future<String?> _getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else if (Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.androidId; // unique ID on Android
+    }
+    return null;
   }
 }
